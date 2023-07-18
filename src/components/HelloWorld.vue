@@ -96,7 +96,6 @@ const geoLocChange = (event) => {
       myposition.value.source.addFeature(feature);
       console.log(myposition)
   }
-
 };
 
 contextMenuItems.value = [
