@@ -5,13 +5,19 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "git": "npm run build && git add . && git commit -m",
+    "postgit": "git push && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "ol": "^7.4.0",
+    "ol-contextmenu": "^5.2.1",
+    "ol-ext": "^4.0.10",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
+    "vue3-openlayers": "^1.0.0",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
