@@ -1,6 +1,6 @@
 import { syncedStore, getYjsDoc /*, observeDeep*/ } from "@syncedstore/core";
 import { WebrtcProvider } from "y-webrtc";
-import { IndexeddbPersistence } from "y-indexeddb";
+//import { IndexeddbPersistence } from "y-indexeddb";
 import { WebsocketProvider } from "y-websocket";
 import { Awareness } from "y-protocols/awareness";
 
@@ -29,7 +29,7 @@ export const webrtcProvider = new WebrtcProvider("rdv", doc, {
   ],
 });
 
-export const indexDBprovider = new IndexeddbPersistence("rdv", doc);
+//export const indexDBprovider = new IndexeddbPersistence("rdv", doc);
 export const websocketProvider = new WebsocketProvider(
   "wss://yjs-leveldb.glitch.me/rdv",
   "rdv",
