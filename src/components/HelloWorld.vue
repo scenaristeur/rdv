@@ -83,6 +83,8 @@ let currentPos = []
 let myposition =ref(null)
 
 const geoLocChange = (event) => {
+  // todo essayer avec https://openlayers.org/en/latest/examples/geolocation.html
+  // ou https://openlayers.org/en/latest/examples/?q=geol
   currentPos = event.target?.getPosition()
   console.log(currentPos)
   console.log(markers)
@@ -93,8 +95,9 @@ const geoLocChange = (event) => {
         geometry: new Geom.Point(currentPos),
       });
       feature.type = "userPosition"
+      myposition.value.source.removeFeature(feature)
       myposition.value.source.addFeature(feature);
-      console.log(myposition)
+      console.log( myposition.value.source)
   }
 };
 
