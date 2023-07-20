@@ -10,6 +10,7 @@
     "postgit": "git push && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
+    "@syncedstore/core": "^0.5.2",
     "core-js": "^3.8.3",
     "ol": "^7.4.0",
     "ol-contextmenu": "^5.2.1",
@@ -18,7 +19,11 @@
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vue3-openlayers": "^1.0.0",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "y-indexeddb": "^9.0.11",
+    "y-protocols": "^1.0.5",
+    "y-webrtc": "^10.2.5",
+    "y-websocket": "^1.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

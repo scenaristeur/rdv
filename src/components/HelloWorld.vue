@@ -6,6 +6,8 @@
         <label for="autoposition">autoposition</label>
       </li>
     </ul>
+
+
     <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height: 85vh" ref="map">
       <ol-view :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" ref="view" />
 
@@ -24,12 +26,7 @@
       </ol-vector-layer>
 
 
-      <ol-vector-layer>
-        <ol-source-vector ref="markers"> </ol-source-vector>
-        <ol-style>
-          <ol-style-icon :src="marker" :scale="0.1"></ol-style-icon>
-        </ol-style>
-      </ol-vector-layer>
+
 
 
       <ol-geolocation :projection="projection" @change:position="geoLocChange">
@@ -47,6 +44,14 @@
           </ol-vector-layer>
         </template>
       </ol-geolocation>
+
+      <ol-vector-layer>
+        <ol-source-vector ref="markers"> </ol-source-vector>
+        <ol-style>
+          <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
+        </ol-style>
+      </ol-vector-layer>
+
       <ol-zoom-control />
       <ol-zoomslider-control />
       <ol-scaleline-control />
@@ -56,15 +61,22 @@
       tipLabel="Fit to Turkey"
     /> -->
     </ol-map>
+    awareness : {{ awareness.clientID }}
+    <hr>
+    positions : {{ ystore.positions }}
+
+
   </div>
 </template>
 
 <script setup>
 import { ref, inject } from "vue";
-
+import * as Vue from "vue";
 import marker from "@/assets/marker.png";
 import marker_user from "@/assets/marker_user.png";
-
+import { store as ystore, awareness } from "@/y_store";
+import { enableVueBindings, observeDeep } from "@syncedstore/core";
+enableVueBindings(Vue);
 
 const center = ref([40, 40]);
 const projection = ref("EPSG:4326");
@@ -80,24 +92,63 @@ const Feature = inject("ol-feature");
 const Geom = inject("ol-geom");
 let autoposition = true
 let currentPos = []
-let myposition =ref(null)
+let myposition = ref(null)
+
+console.log(ystore)
+
+const positionsUpdate = (e) => {
+  console.log(e)
+  if (markers.value != null) {
+    // markers.value.getSource().clear()
+   // e.forEach(position => { console.log("POS", position) })
+    for (let [clientID, position] of Object.entries(ystore.positions)) {
+      if (clientID != awareness.clientID) {
+        console.log("clientID", clientID, position[0], position[1])
+        const feature = new Feature({
+          geometry: new Geom.Point(position),
+        });
+        markers.value.source.addFeature(feature);
+      }
+    }
+  }
+
+
+
+
+  // .forEach( => {
+  //   const feature = new Feature({
+  //         geometry: new Geom.Point(val.coordinate),
+  //       });
+  //       markers.value.source.addFeature(feature);
+
+  // });
+
+
+}
+
+observeDeep(ystore.positions, positionsUpdate)
+
+
 
 const geoLocChange = (event) => {
   // todo essayer avec https://openlayers.org/en/latest/examples/geolocation.html
   // ou https://openlayers.org/en/latest/examples/?q=geol
   currentPos = event.target?.getPosition()
-  console.log(currentPos)
-  console.log(markers)
- 
+  //console.log(currentPos)
+  // console.log(markers)
+  ystore.positions[awareness.clientID] = currentPos
+
+
   if (autoposition) {
     view.value?.setCenter(event.target?.getPosition());
     const feature = new Feature({
-        geometry: new Geom.Point(currentPos),
-      });
-      feature.type = "userPosition"
-      myposition.value.source.removeFeature(feature)
-      myposition.value.source.addFeature(feature);
-      console.log( myposition.value.source)
+      geometry: new Geom.Point(currentPos),
+    });
+    feature.type = "userPosition"
+    // myposition.value.getSource().clear()
+    myposition.value.source.removeFeature(feature); // pas propre
+    myposition.value.source.addFeature(feature);
+    console.log(myposition.value.source)
   }
 };
 
