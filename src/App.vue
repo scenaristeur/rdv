@@ -1,30 +1,32 @@
 <template>
-  <!-- <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>  -->
-  <router-view/>
+  <OlMap></OlMap>
 </template>
-
+ 
+<script>
+import OlMap from './components/OlMap.vue'
+ 
+export default {
+  name: 'App',
+  components: {
+    OlMap
+  }
+}
+</script>
+ 
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin-top: 60px;
 }
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+ 
+html, body, #map, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 </style>
