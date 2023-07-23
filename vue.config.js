@@ -4,26 +4,35 @@ const publicPath = process.env.NODE_ENV === 'production' ? '/rdv/' : '/'
 
 module.exports = defineConfig({
   publicPath: publicPath,
-    pwa: {
-    name: 'rdv',
-    //  themeColor: '#4DBA87',
-    //  msTileColor: '#000000',
-    appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: 'black',
-    manifestOptions: {
-      share_target: {
-        action: publicPath,
-        method: "GET",
-        enctype: "application/x-www-form-urlencoded",
-        params: {
-          title: "title",
-          text: "text",
-          url: "url"
-        }
-      },
+
+  pwa: {
+  name: 'rdv',
+  //  themeColor: '#4DBA87',
+  //  msTileColor: '#000000',
+  appleMobileWebAppCapable: 'yes',
+  appleMobileWebAppStatusBarStyle: 'black',
+  manifestOptions: {
+    share_target: {
+      action: publicPath,
+      method: "GET",
+      enctype: "application/x-www-form-urlencoded",
+      params: {
+        title: "title",
+        text: "text",
+        url: "url"
+      }
+    },
+  }
+},
+
+  transpileDependencies: [
+    'quasar'
+  ],
+
+  pluginOptions: {
+    quasar: {
+      importStrategy: 'kebab',
+      rtlSupport: false
     }
-  },
-
-
-  transpileDependencies: true
+  }
 })

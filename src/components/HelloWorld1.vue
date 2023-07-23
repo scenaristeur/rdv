@@ -2,10 +2,10 @@
   <div>
     <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true" 
             data-projection="EPSG:4326" style="height: 400px">
-      <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation"></vl-view>
+      <vl-view v-model:zoom="zoom" v-model:center="center" v-model:rotation="rotation"></vl-view>
 
       <vl-geoloc @update:position="geolocPosition = $event">
-        <template slot-scope="geoloc">
+        <template v-slot="geoloc">
           <vl-feature v-if="geoloc.position" id="position-feature">
             <vl-geom-point :coordinates="geoloc.position"></vl-geom-point>
             <vl-style-box>

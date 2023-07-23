@@ -3,8 +3,8 @@
 </template>
  
 <script>
-import OlMap from './components/OlMap.vue'
- 
+import OlMap from '@/components/OlMap.vue'
+import 'ol/ol.css'
 export default {
   name: 'App',
   components: {
