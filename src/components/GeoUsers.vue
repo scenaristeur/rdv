@@ -1,7 +1,7 @@
 <template>
     <div>
         <hr>
-        me {{ clientID }} , users : <br>
+        me {{ clientID }} , users : {{ features.length }} <br>
         {{ users }}
     </div>
 </template>
@@ -9,6 +9,13 @@
 <script>
 
 import { awareness } from "@/y_store";
+import Feature from 'ol/Feature.js';
+import { fromLonLat } from 'ol/proj.js';
+import Point from 'ol/geom/Point.js';
+import { Icon, Style } from 'ol/style.js';
+import VectorSource from 'ol/source/Vector.js';
+import { Vector as VectorLayer } from 'ol/layer.js';
+import marker from "@/assets/marker.png";
 
 
 export default {
@@ -16,11 +23,27 @@ export default {
     data() {
         return {
             clientID: null,
-            users: {}
+            users: {},
+            features: []
         }
     },
     methods: {
         init() {
+
+
+
+
+
+
+            const vectorSource = new VectorSource({
+                features: this.features //[rome, london/*, madrid, paris, berlin*/],
+            });
+
+            const vectorLayer = new VectorLayer({
+                source: vectorSource,
+            });
+
+            this.map.addLayer(vectorLayer);
             this.clientID = awareness.clientID
             console.log("init geousers", awareness.clientID)
 
@@ -72,21 +95,39 @@ export default {
                     console.log("set marker", clientID, user)
                     this.users[clientID] = user
 
+                    let userFeature = new Feature({
+                        geometry: new Point(fromLonLat([12.5, 41.9])),
+                    });
+
+
+
+                    userFeature.setStyle(
+                        new Style({
+                            image: new Icon({
+                                color: '#BADA55',
+                                crossOrigin: 'anonymous',
+                                src: marker,
+                                scale: 0.05
+                            }),
+                        })
+                    );
+
+                    this.features.push(userFeature)
+
+                    // const madrid = new Feature({
+                    //     geometry: new Point(fromLonLat([-3.683333, 40.4])),
+                    // });
+                    // const paris = new Feature({
+                    //     geometry: new Point(fromLonLat([2.353, 48.8566])),
+                    // });
+                    // const berlin = new Feature({
+                    //     geometry: new Point(fromLonLat([13.3884, 52.5169])),
+                    // });
+
 
 
                 }
             }
-
-            // .forEach(value, key){
-            //     console.log( "state", key, value)
-            // }
-            // let states = Object.entries(awareness.getStates())
-            // console.log(states)
-            // this.users = []
-            // states.forEach((clientID, s) => {
-            //     console.log(clientID, s)
-            // })
-
 
         }
 

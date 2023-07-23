@@ -75,7 +75,7 @@ export default {
                 trackingOptions: {
                     enableHighAccuracy: true
                 },
-                projection: that.map.view.getProjection()
+               // projection: that.map.view.getProjection()
             });
 
             function el(id) {
@@ -89,15 +89,16 @@ export default {
             // update the HTML page when the position changes.
             geolocation.on('change', function () {
                 console.log(geolocation)
-                var coordinates = geolocation.getPosition();
-               // console.log("me", coordinates)
+               var coordinates = geolocation.getPosition();
+               console.log("me", coordinates)
                 that.updateAwarenessPosition(coordinates)
                 el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
                 el('altitude').innerText = geolocation.getAltitude() + ' [m]';
                 el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
                 el('heading').innerText = geolocation.getHeading() + ' [rad]';
                 el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
-
+                that.map.view.setCenter(coordinates);
+               // that.addMarker(coordinates))
 
             });
 
