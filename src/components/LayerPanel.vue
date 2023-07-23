@@ -12,7 +12,7 @@
                     <q-item-section avatar>
                         <!-- <q-checkbox color="primary" v-model = "layer.getProperties().visible" @click = "toggleLayer(layer)"/> -->
                         <span class="material-symbols-outlined cursor-pointer"
-                            style="color: #54b582; font-size: 40px; font-variation-settings: 'FILL' 1;"
+                            style="color: #54b582; font-size: 40px; font-variation-settings: 'FILL' 0;"
                             @click="toggleLayer(layer, $event)" v-if="!layer.get('isBaseMap')">
                             check_circle
                         </span>
@@ -80,6 +80,7 @@ export default {
                     }),
                     name: lyr.name,
                     minZoom: lyr.minZoom,
+                    visible: lyr.visible,
                     isExpanded: false
                 });
                 current_layer.geostyle = lyr.style;

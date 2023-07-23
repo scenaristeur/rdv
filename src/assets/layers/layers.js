@@ -17,28 +17,28 @@ let layers = [
     {
         "layer": us_states,
         "name": 'US States',
-        "visible": true,
+        "visible": false,
         "minZoom": 1,
         "style": us_states_style        
     },
     {
         "layer": us_counties,
         "name": 'US Couties',
-        "visible": true,
+        "visible": false,
         "minZoom": 1,
         "style": us_counties_style
     },
     {   
         "layer": us_outline,
         "name": 'US Outline',
-        "visible": true,
+        "visible": false,
         "minZoom": 1,
         "style": us_outline_style
     },
     {
         "layer": earthquake,
         "name": 'Earthquakes',
-        "visible": true,
+        "visible": false,
         "minZoom": 1,
         "style": earthquake_style
     }
