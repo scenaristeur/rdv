@@ -3,6 +3,7 @@
             <q-page class="flex flex-center">
                 <div id="map">
                 </div>
+                <MapPopup />
             </q-page>
    
 </template>
@@ -11,10 +12,14 @@
 import { Map, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
 import { OSM } from 'ol/source';
+import MapPopup from '@/components/MapPopup.vue'
 import "ol/ol.css";
 
 export default {
     name: 'OlMap',
+    components: {
+        MapPopup
+    },
     mounted() {
         this.map = new Map({
             target: 'map',

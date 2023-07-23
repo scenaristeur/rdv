@@ -111,7 +111,7 @@ export default {
 </script>
  
 <style>
-
+@import url('../public/material_fonts/material_fonts.css');
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
