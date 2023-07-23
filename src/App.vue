@@ -1,5 +1,9 @@
 <template>
-  <OlMap></OlMap>
+  <q-layout>
+    <q-page-container>
+      <OlMap></OlMap>
+    </q-page-container>
+  </q-layout>
 </template>
  
 <script>
