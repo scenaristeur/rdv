@@ -31,9 +31,9 @@ export const webrtcProvider = new WebrtcProvider("rdv", doc, {
 
 //export const indexDBprovider = new IndexeddbPersistence("rdv", doc);
 export const websocketProvider = new WebsocketProvider(
-  "wss://yjs-leveldb.glitch.me/rdv",
+  "wss://rdv.glitch.me/rdv",
   "rdv",
-  doc
+  doc, {awareness: awareness}
 );
 
 webrtcProvider.on("status", (event) => {

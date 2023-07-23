@@ -3,7 +3,7 @@
         <div id="info" style="display: none;"></div>
         <label for="track">
             track position
-            <input id="track" type="checkbox"  @click="trackPosition" />
+            <input id="track" type="checkbox" @click="trackPosition" />
         </label>
         <p>
             position accuracy : <code id="accuracy"></code><br>
@@ -27,6 +27,12 @@ import { Vector as VectorLayer } from 'ol/layer.js';
 import { Vector as VectorSource } from 'ol/source.js';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style.js';
 import View from 'ol/View.js';
+import * as Vue from "vue";
+import { store as ystore, awareness } from "@/y_store";
+import { enableVueBindings, observeDeep } from "@syncedstore/core";
+
+enableVueBindings(Vue);
+let username = 'user_' + Date.now()
 
 
 export default {
@@ -34,9 +40,12 @@ export default {
     data() {
         return {
             position: null,
-          //  tracking : true
+            markers: [],
+            follow_me: true
+            //  tracking : true
         }
     },
+
     methods: {
         trackPosition(e) {
             console.log(e.target.checked, this.map.view)
@@ -52,6 +61,17 @@ export default {
             });
             this.map.view = view
             let that = this
+
+
+            // You can think of your own awareness information as a key-value store.
+            // We update our "user" field to propagate relevant user information.
+            awareness.setLocalStateField('user', {
+                // Define a print name that should be displayed
+                name: username,
+                // Define a color that should be associated to the user:
+                color: '#ffb61e' // should be a hex color
+            })
+
             var geolocation = new Geolocation({
                 // enableHighAccuracy must be set to true to have the heading value.
                 trackingOptions: {
@@ -71,11 +91,16 @@ export default {
             // update the HTML page when the position changes.
             geolocation.on('change', function () {
                 console.log(geolocation)
+                var coordinates = geolocation.getPosition();
+               // console.log("me", coordinates)
+                that.updateAwarenessPosition(coordinates)
                 el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
                 el('altitude').innerText = geolocation.getAltitude() + ' [m]';
                 el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
                 el('heading').innerText = geolocation.getHeading() + ' [rad]';
                 el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
+
+
             });
 
             // handle geolocation error.
@@ -108,6 +133,16 @@ export default {
                 var coordinates = geolocation.getPosition();
                 positionFeature.setGeometry(coordinates ?
                     new Point(coordinates) : null);
+
+                that.updateAwarenessPosition(coordinates)
+
+                if (this.follow_me){
+                    that.map.view.setCenter(geolocation.getPosition());
+                    that.map.view.setZoom(5);
+                }
+
+
+
             });
 
             new VectorLayer({
@@ -116,7 +151,47 @@ export default {
                     features: [accuracyFeature, positionFeature]
                 })
             });
+            observeDeep(ystore.positions, this.positionsUpdate)
 
+            // You can observe when a user updates their awareness information
+            awareness.on('change', changes => {
+                console.log("change", changes)
+                // Whenever somebody updates their awareness information,
+                // we log all awareness information from all users.
+                console.log("awareness", Array.from(awareness.getStates().values()))
+
+                // Array.from(awareness.getStates().values()).forEach(awa => {
+                //     console.log("me=", username, "remote ",awa.user.name, awa.position)
+                // })
+
+            })
+        },
+        updateAwarenessPosition(coordinates) {
+            console.log(coordinates)
+            // You can think of your own awareness information as a key-value store.
+            // We update our "user" field to propagate relevant user information.
+            awareness.setLocalStateField('position', {
+                // Define a print name that should be displayed
+                coordinates: coordinates,
+                // Define a color that should be associated to the user:
+                //color: '#ffb61e' // should be a hex color
+            })
+        },
+        positionsUpdate(e) {
+            console.log(e)
+            // if (this.markers.value != null) {
+            //     // markers.value.getSource().clear()
+            //     // e.forEach(position => { console.log("POS", position) })
+            //     for (let [clientID, position] of Object.entries(ystore.positions)) {
+            //         if (clientID != awareness.clientID) {
+            //             console.log("clientID", clientID, position[0], position[1])
+            //             const feature = new Feature({
+            //                 geometry: new Geom.Point(position),
+            //             });
+            //             markers.value.source.addFeature(feature);
+            //         }
+            //     }
+            // }
         }
     },
     watch: {
@@ -124,7 +199,7 @@ export default {
             handler() {
                 console.log(this.map)
                 //if (this.map != undefined && this.map.view != undefined) {
-                    this.init()
+                this.init()
                 //}
                 //  
             },
