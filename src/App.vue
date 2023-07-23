@@ -22,6 +22,7 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-2">
       <LayerPanel />
       <GeoLoc/>
+      <GeoUsers />
       <!-- <q-list>
         <q-item-label header>Essential Links</q-item-label>
         <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
@@ -83,6 +84,7 @@ import 'ol/ol.css'
 import OlMap from '@/components/OlMap.vue'
 import GeoLoc from '@/components/GeoLoc.vue'
 import LayerPanel from '@/components/LayerPanel.vue'
+import GeoUsers from '@/components/GeoUsers.vue'
 
 
 import { ref } from 'vue'
@@ -94,7 +96,8 @@ export default {
   components: {
     OlMap,
     LayerPanel, 
-    GeoLoc
+    GeoLoc,
+    GeoUsers
   },
   computed: {
     ...mapGetters("map", {
