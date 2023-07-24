@@ -11,7 +11,7 @@ import { Awareness } from "y-protocols/awareness";
 const shape = {
   // brains: [],
   // neurones: [],
-  positions: {},
+  rdvs: {},
 };
 export const store = syncedStore(shape);
 // export const observe = observeDeep()
