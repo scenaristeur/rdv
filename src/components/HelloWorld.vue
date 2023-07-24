@@ -12,8 +12,9 @@
 
       <ol-vector-layer>
         <ol-source-vector ref="markers"> </ol-source-vector>
-        <ol-style>
+        <ol-style :overrideStyleFunction="overrideStyleFunction">
           <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
+          <ol-style-text text="Hellooooo"></ol-style-text>
         </ol-style>
       </ol-vector-layer>
 
@@ -170,7 +171,7 @@ contextMenuItems.value = [
     // instead of `icon` property (see next line)
     icon: marker, // this can be relative or absolute
     callback: (val) => {
-     // console.log(val);
+      // console.log(val);
       rdv.value = {
         uuid: uuidv4(),
         author: awareness.clientID,
@@ -178,7 +179,7 @@ contextMenuItems.value = [
       }
 
 
-     // console.log(rdv)
+      // console.log(rdv)
       modal.value = true
 
     },
@@ -198,7 +199,7 @@ const onAddRdv = () => {
     geometry: new Geom.Point(rdv.value.coordinates),
     data: rdv.value
   });
- // console.log("feature1", feature)
+  // console.log("feature1", feature)
   markers.value.source.addFeature(feature);
   ystore.rdvs[rdv.value.uuid] = rdv.value
 
@@ -232,9 +233,9 @@ const overrideStyleFunction = (feature, style) => {
 
   let color = feature.get("color");  //from extra data in properties of the feature
   // if(properties == "....") // change the style
-  style.getImage().getFill().setColor(color);
+  style.getImage().getFill != undefined && style.getImage().getFill().setColor(color);
   let name = feature.get("name");
- // console.log(style.getImage())
+  // console.log(style.getImage())
   style.getText().setText(name)
 
 }
@@ -281,7 +282,7 @@ const geoLocChange = (event) => {
 const updateUsers = (states) => {
   // let featuresArray = []
   states.forEach(s => {
-  //  console.log(s.user.name, s.user.color, s.position?.coordinates)
+    //  console.log(s.user.name, s.user.color, s.position?.coordinates)
     if (s.position != undefined && users.value != null && s.user.clientID != awareness.clientID && users.value.source != undefined) {
       let exist = users.value.source.getFeatures().find(f => f.get('clientID') == s.user.clientID)
       console.log("exist? ", s.user.clientID, exist)
@@ -322,7 +323,7 @@ awareness.on('change', () /*changes */ => {
   // console.log("changes", changes)
   // Whenever somebody updates their awareness information,
   // we log all awareness information from all users.
- // console.log(Array.from(awareness.getStates().values()))
+  // console.log(Array.from(awareness.getStates().values()))
   updateUsers(Array.from(awareness.getStates().values()))
 })
 
@@ -336,12 +337,13 @@ const rdvsUpdate = (e) => {
     // e.forEach(position => { console.log("POS", position) })
     for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
       if (uuid != awareness.clientID) {
-        console.log("uuid", uuid, rdv.coordinates, rdv.title)
+        console.log("uuid", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
         console.log("uuid", uuid, /*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
-        // const feature = new Feature({
-        //   geometry: new Geom.Point(position),
-        // });
-        // markers.value.source.addFeature(feature);
+        const feature = new Feature({
+          geometry: new Geom.Point(rdv.coordinates),
+          name: rdv.title + rdv.start_date + rdv.end_date,
+        });
+        markers.value.source.addFeature(feature);
       }
     }
   }
@@ -361,6 +363,7 @@ const rdvsUpdate = (e) => {
 }
 
 observeDeep(ystore.rdvs, rdvsUpdate)
+rdvsUpdate()
 
 </script>
 
