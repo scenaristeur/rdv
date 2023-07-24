@@ -12,24 +12,20 @@
 
       <ol-vector-layer>
         <ol-source-vector ref="markers"> </ol-source-vector>
-  
+
         <ol-style :overrideStyleFunction="overrideStyleFunction">
           <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
           <ol-style-text text="Hellooooo"></ol-style-text>
         </ol-style>
-   
+
       </ol-vector-layer>
 
-      <ol-interaction-select
-      @select="featureSelected"
-      :condition="selectCondition"
-      :features="selectedFeatures"
-    >
-    <ol-style :overrideStyleFunction="overrideStyleFunction">
-      <ol-style-icon :src="marker" :scale="0.1"></ol-style-icon>
-      <ol-style-text text="Hellooooo"></ol-style-text>
-    </ol-style>
-    </ol-interaction-select>
+      <ol-interaction-select @select="featureSelected" :condition="selectCondition" :features="selectedFeatures">
+        <ol-style :overrideStyleFunction="overrideStyleFunction">
+          <ol-style-icon :src="marker" :scale="0.1"></ol-style-icon>
+          <ol-style-text color="white" text="Hellooooo"></ol-style-text>
+        </ol-style>
+      </ol-interaction-select>
 
       <ol-vector-layer>
         <ol-source-vector ref="users"> </ol-source-vector>
@@ -75,15 +71,12 @@
           <label :for="`type-${field.name}`"><code>{{ field.name }}</code>:</label>
         </BCol>
         <BCol sm="9">
-          <BFormInput :id="`type-${field.name}`" :type="field.type" v-model="rdv[field.id]" />
+          <BFormInput :disabled="!edit" :id="`type-${field.name}`" :type="field.type" v-model="rdv[field.id]"
+            v-bind:min="field.min" />
         </BCol>
       </BRow>
-      <div class="mt-2">Value: {{ rdv }}</div>
-
+      <!-- <div class="mt-2">Value: {{ rdv }}</div> -->
     </BModal>
-
-
-
     <!-- 
    
 
@@ -143,6 +136,7 @@ const fillColor = ref("white");
 const Feature = inject("ol-feature");
 const Geom = inject("ol-geom");
 const modal = ref(false)
+const edit = ref(false)
 
 const selectedFeatures = ref(new Collection());
 //const modifyEnabled = ref(false);
@@ -151,9 +145,21 @@ const selectConditions = inject("ol-selectconditions");
 const selectCondition = selectConditions.click;
 
 function featureSelected(event) {
-  console.log("selected", event.selected[0])
-  console.log(      selectedFeatures
-)
+  console.log(event)
+  if (event.selected.length > 0) {
+    let selected_uuid = event.selected[0].get('uuid')
+    console.log("selected", event.selected[0], event.selected[0].get('uuid'))
+    rdv.value = ystore.rdvs[selected_uuid]
+    console.log(rdv.value.author, 'if author = clientID, edit = true')
+    // edit.value = rdv.value.author == awareness.clientID
+    edit.value = false
+    modal.value = true
+  }
+  // console.log(selectedFeatures)
+
+
+
+
   // modifyEnabled.value = false;
   // if (event.selected.length > 0) {
   //   modifyEnabled.value = true;
@@ -181,9 +187,9 @@ function featureSelected(event) {
 const inputFields = [
   { id: 'title', name: 'Title', type: 'text' },
   { id: 'desc', name: 'Description', type: 'text' },
-  { id: 'start_date', name: 'Start Date', type: 'date' },
+  { id: 'start_date', name: 'Start Date', type: 'date', min: new Date().toISOString().split('T')[0] },
   { id: 'start_time', name: 'Start Time', type: 'time' },
-  { id: 'end_date', name: 'End Date', type: 'date' },
+  { id: 'end_date', name: 'End Date', type: 'date', min: new Date().toISOString().split('T')[0] },
   { id: 'end_time', name: 'End Time', type: 'time' },
 
 
@@ -225,9 +231,8 @@ contextMenuItems.value = [
         author: awareness.clientID,
         coordinates: val.coordinate
       }
-
-
       // console.log(rdv)
+      edit.value = true
       modal.value = true
 
     },
@@ -243,13 +248,18 @@ const onAddRdv = () => {
 
   rdv.value.updated = Date.now()
 
+
   const feature = new Feature({
     geometry: new Geom.Point(rdv.value.coordinates),
     data: rdv.value
   });
   // console.log("feature1", feature)
-  markers.value.source.addFeature(feature);
-  ystore.rdvs[rdv.value.uuid] = rdv.value
+  if (edit.value == true) {
+    markers.value.source.addFeature(feature);
+    ystore.rdvs[rdv.value.uuid] = rdv.value
+  }
+  // ystore.rdvs[rdv.value.uuid] != undefined ? delete ystore.rdvs[rdv.value.uuid] : ""
+
 
 }
 
