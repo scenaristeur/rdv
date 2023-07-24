@@ -12,13 +12,24 @@
 
       <ol-vector-layer>
         <ol-source-vector ref="markers"> </ol-source-vector>
+  
         <ol-style :overrideStyleFunction="overrideStyleFunction">
           <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
           <ol-style-text text="Hellooooo"></ol-style-text>
         </ol-style>
+   
       </ol-vector-layer>
 
-
+      <ol-interaction-select
+      @select="featureSelected"
+      :condition="selectCondition"
+      :features="selectedFeatures"
+    >
+    <ol-style :overrideStyleFunction="overrideStyleFunction">
+      <ol-style-icon :src="marker" :scale="0.1"></ol-style-icon>
+      <ol-style-text text="Hellooooo"></ol-style-text>
+    </ol-style>
+    </ol-interaction-select>
 
       <ol-vector-layer>
         <ol-source-vector ref="users"> </ol-source-vector>
@@ -30,6 +41,8 @@
           </ol-style-circle>
         </ol-style>
       </ol-vector-layer>
+
+
 
 
       <ol-geolocation :projection="projection" @change:position="geoLocChange">
@@ -92,6 +105,7 @@ import { store as ystore, awareness } from "@/y_store";
 import { enableVueBindings, observeDeep } from "@syncedstore/core";
 enableVueBindings(Vue);
 import { v4 as uuidv4 } from 'uuid';
+import { Collection } from "ol";
 // import { fromLonLat } from "ol/proj";
 // import Point from "ol/geom/Point";
 // import Icon from "ol/style/Icon";
@@ -129,6 +143,40 @@ const fillColor = ref("white");
 const Feature = inject("ol-feature");
 const Geom = inject("ol-geom");
 const modal = ref(false)
+
+const selectedFeatures = ref(new Collection());
+//const modifyEnabled = ref(false);
+
+const selectConditions = inject("ol-selectconditions");
+const selectCondition = selectConditions.click;
+
+function featureSelected(event) {
+  console.log("selected", event.selected[0])
+  console.log(      selectedFeatures
+)
+  // modifyEnabled.value = false;
+  // if (event.selected.length > 0) {
+  //   modifyEnabled.value = true;
+  // }
+  // selectedFeatures.value = event.target.getFeatures();
+}
+
+
+// https://vue3openlayers.netlify.app/componentsguide/interactions/select/#usage
+// const selectConditions = inject("ol-selectconditions");
+
+// const selectCondition = selectConditions.pointerMove;
+
+// const featureSelected = (event) => {
+//   console.log(event);
+// };
+
+// const selectInteactionFilter = (feature) => {
+//   console.log(feature/*,feature.get("title")*/);
+//  // return feature.values_.name != undefined;
+// };
+
+
 
 const inputFields = [
   { id: 'title', name: 'Title', type: 'text' },
@@ -342,6 +390,7 @@ const rdvsUpdate = (e) => {
         const feature = new Feature({
           geometry: new Geom.Point(rdv.coordinates),
           name: rdv.title + rdv.start_date + rdv.end_date,
+          uuid: uuid
         });
         markers.value.source.addFeature(feature);
       }
