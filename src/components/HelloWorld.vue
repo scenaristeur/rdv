@@ -217,6 +217,10 @@ contextMenuItems.value = [
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
       view.value.setCenter(val.coordinate);
+     // view.value.zoom = 17
+     // zoom.value = 17
+     // map.value.changed()
+     // view.value.setZoom(17)
     }, // `center` is your callback function
   },
   {
@@ -347,7 +351,7 @@ const updateUsers = (states) => {
     //  console.log(s.user.name, s.user.color, s.position?.coordinates)
     if (s.position != undefined && users.value != null && s.user.clientID != awareness.clientID && users.value.source != undefined) {
       let exist = users.value.source.getFeatures().find(f => f.get('clientID') == s.user.clientID)
-      console.log("exist? ", s.user.clientID, exist)
+    //  console.log("exist? ", s.user.clientID, exist)
 
       if (exist == undefined) {
 
