@@ -55,7 +55,9 @@ export default {
            // console.log("init")
             var view = new View({
                 center: [0, 0],
-                zoom: 4
+                zoom: 4,
+                projection: "EPSG:4326"
+                
             });
             this.map.view = view
             let that = this
@@ -75,7 +77,7 @@ export default {
                 trackingOptions: {
                     enableHighAccuracy: true
                 },
-               // projection: that.map.view.getProjection()
+                projection: that.map.view.getProjection()
             });
 
             function el(id) {

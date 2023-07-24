@@ -10,7 +10,7 @@
 
 import { awareness } from "@/y_store";
 import Feature from 'ol/Feature.js';
-import { fromLonLat } from 'ol/proj.js';
+//import { fromLonLat } from 'ol/proj.js';
 import Point from 'ol/geom/Point.js';
 import { Icon, Style } from 'ol/style.js';
 import VectorSource from 'ol/source/Vector.js';
@@ -96,7 +96,7 @@ export default {
                     this.users[clientID] = user
 
                     let userFeature = new Feature({
-                        geometry: new Point(fromLonLat([12.5, 41.9])),
+                        geometry: new Point(state.position.coordinates),
                     });
 
 

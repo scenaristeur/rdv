@@ -58,14 +58,14 @@ export default {
     components: {
         InLegend
     },
-    watch: {
-        'map': {
-            handler() {
-                this.addLayers();
-            },
-            deep: false
-        }
-    },
+    // watch: {
+    //     'map': {
+    //         handler() {
+    //             this.addLayers();
+    //         },
+    //         deep: false
+    //     }
+    // },
     computed: {
         map() {
             return this.$store.state.map
