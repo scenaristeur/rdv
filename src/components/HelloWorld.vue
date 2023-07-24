@@ -21,10 +21,11 @@
 
       <ol-vector-layer>
         <ol-source-vector ref="users"> </ol-source-vector>
-        <ol-style>
+        <ol-style :overrideStyleFunction="overrideStyleFunction">
           <ol-style-circle :radius="radius">
             <ol-style-fill :color="fillColor"></ol-style-fill>
             <ol-style-stroke :color="strokeColor" :width="strokeWidth"></ol-style-stroke>
+            <ol-style-text text="Hellooooo"></ol-style-text>
           </ol-style-circle>
         </ol-style>
       </ol-vector-layer>
@@ -87,8 +88,8 @@ const faking = ref(true);
 const follow_me = ref(true);
 // let featuresArray = ref(null);
 
-const radius = ref(4);
-const strokeWidth = ref(1);
+const radius = ref(5);
+//const strokeWidth = ref(1);
 const strokeColor = ref("red");
 const fillColor = ref("white");
 
@@ -140,6 +141,22 @@ contextMenuItems.value = [
 //     //  }
 //   }
 // })
+
+
+
+const overrideStyleFunction = (feature, style) => {
+
+  let color = feature.get("color");  //from extra data in properties of the feature
+  // if(properties == "....") // change the style
+  style.getImage().getFill().setColor(color);
+  let name = feature.get("name");
+  console.log(style.getImage())
+  style.getText().setText(name)
+
+}
+
+
+
 
 // You can think of your own awareness information as a key-value store.
 // We update our "user" field to propagate relevant user information.
