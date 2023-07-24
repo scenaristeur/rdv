@@ -47,10 +47,10 @@
       </ol-geolocation>
     </ol-map>
     <input type="checkbox" id="checkbox" ref="faking" v-model="checked" />
-    <label for="checkbox">Fake</label> 
-
+    <label for="checkbox">Fake</label>
+    &nbsp;&nbsp;
     <input type="checkbox" id="follow_me" ref="follow_me" checked v-model="follow_checked" />
-    <label for="checkbox">Follow me</label> 
+    <label for="follow_me">Follow me</label>
     <!-- <button @click="addMarker">Add Marker</button> -->
     <!-- <BButton @click="modal = !modal"> Toggle modal </BButton> -->
     <BModal v-model="modal" @ok="onAddRdv">
@@ -76,7 +76,7 @@
     <BFormInput v-model="rdv.title" placeholder="Enter your name" /> -->
 
     <hr>
-    <small><i>right-click or long tap to add a rdv</i></small>
+    <small><i>right-click or long tap on the map to add a rdv</i></small>
     0.0.1
   </div>
 </template>
