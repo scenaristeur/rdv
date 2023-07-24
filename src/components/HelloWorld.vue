@@ -47,12 +47,36 @@
       </ol-geolocation>
     </ol-map>
     <input type="checkbox" id="checkbox" ref="faking" v-model="checked" />
-    <label for="checkbox">{{ checked }}</label> Fake
+    <label for="checkbox">Fake</label> 
 
     <input type="checkbox" id="follow_me" ref="follow_me" checked v-model="follow_checked" />
-    <label for="checkbox">{{ follow_checked }}</label> Follow me
+    <label for="checkbox">Follow me</label> 
     <!-- <button @click="addMarker">Add Marker</button> -->
+    <!-- <BButton @click="modal = !modal"> Toggle modal </BButton> -->
+    <BModal v-model="modal" @ok="onAddRdv">
+
+
+      <BRow class="my-1" v-for="field in inputFields" :key="field.id">
+        <BCol sm="3">
+          <label :for="`type-${field.name}`"><code>{{ field.name }}</code>:</label>
+        </BCol>
+        <BCol sm="9">
+          <BFormInput :id="`type-${field.name}`" :type="field.type" v-model="rdv[field.id]" />
+        </BCol>
+      </BRow>
+      <div class="mt-2">Value: {{ rdv }}</div>
+
+    </BModal>
+
+
+
+    <!-- 
+   
+
+    <BFormInput v-model="rdv.title" placeholder="Enter your name" /> -->
+
     <hr>
+    <small><i>right-click or long tap to add a rdv</i></small>
     0.0.1
   </div>
 </template>
@@ -84,19 +108,49 @@ const contextMenuItems = ref([]);
 
 const markers = ref([]);
 const users = ref([]);
-const faking = ref(true);
+const faking = ref(false);
 const follow_me = ref(true);
+let checked = false;
+let follow_checked = true
+
 // let featuresArray = ref(null);
 
 const radius = ref(5);
-//const strokeWidth = ref(1);
+const strokeWidth = ref(1);
 const strokeColor = ref("red");
 const fillColor = ref("white");
 
 
 const Feature = inject("ol-feature");
 const Geom = inject("ol-geom");
+const modal = ref(false)
 
+const inputFields = [
+  { id: 'title', name: 'Title', type: 'text' },
+  { id: 'desc', name: 'Description', type: 'text' },
+  { id: 'start_date', name: 'Start Date', type: 'date' },
+  { id: 'start_time', name: 'Start Time', type: 'time' },
+  { id: 'end_date', name: 'End Date', type: 'date' },
+  { id: 'end_time', name: 'End Time', type: 'time' },
+
+
+  // 'number',
+  // 'email',
+  // 'password',
+  // 'search',
+  // 'url',
+  // 'tel',
+  // 'date',
+  // 'time',
+  // 'range',
+  // 'color',
+  // 'datetime',
+  // 'datetime-local',
+  // 'month',
+  // 'week',
+]
+
+let rdv = ref({})
 
 contextMenuItems.value = [
   {
@@ -107,21 +161,42 @@ contextMenuItems.value = [
     }, // `center` is your callback function
   },
   {
-    text: "Add a Marker",
+    text: "Add a rdv",
     classname: "some-style-class", // you can add this icon with a CSS class
     // instead of `icon` property (see next line)
     icon: marker, // this can be relative or absolute
     callback: (val) => {
       console.log(val);
-      const feature = new Feature({
-        geometry: new Geom.Point(val.coordinate),
-      });
-      // console.log("feature1", feature)
-      markers.value.source.addFeature(feature);
+      rdv.value = {}
+      rdv.value.coordinates = val.coordinate
+
+      console.log(rdv)
+      modal.value = true
+
     },
   },
   "-", // this is a separator
 ];
+
+
+
+const onAddRdv = () => {
+
+  console.log(rdv.value)
+  rdv.value.author = awareness.clientID
+  rdv.value.updated = Date.now()
+
+  const feature = new Feature({
+    geometry: new Geom.Point(rdv.value.coordinates),
+    data: rdv.value
+  });
+  // console.log("feature1", feature)
+  markers.value.source.addFeature(feature);
+
+}
+
+
+
 // var layerStyle = new Style({
 //   image: new Icon({
 //     src: marker, //?? // data url for max size image
@@ -241,10 +316,6 @@ awareness.on('change', () /*changes */ => {
   console.log(Array.from(awareness.getStates().values()))
   updateUsers(Array.from(awareness.getStates().values()))
 })
-
-
-
-
 
 </script>
 
