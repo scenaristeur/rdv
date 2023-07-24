@@ -22,7 +22,10 @@
       <ol-vector-layer>
         <ol-source-vector ref="users"> </ol-source-vector>
         <ol-style>
-          <ol-style-icon :src="marker_user" :scale="0.05"></ol-style-icon>
+          <ol-style-circle :radius="radius">
+            <ol-style-fill :color="fillColor"></ol-style-fill>
+            <ol-style-stroke :color="strokeColor" :width="strokeWidth"></ol-style-stroke>
+          </ol-style-circle>
         </ol-style>
       </ol-vector-layer>
 
@@ -47,6 +50,7 @@
 
     <input type="checkbox" id="follow_me" ref="follow_me" checked v-model="follow_checked" />
     <label for="checkbox">{{ follow_checked }}</label> Follow me
+    <!-- <button @click="addMarker">Add Marker</button> -->
     <hr>
     0.0.1
   </div>
@@ -55,7 +59,7 @@
 <script setup>
 import hereIcon from "@/assets/here.png";
 import marker from "@/assets/marker.png";
-import marker_user from "@/assets/marker_user.png";
+//import marker_user from "@/assets/marker_user.png";
 import { ref, inject } from "vue";
 import { awareness } from "@/y_store";
 // import { fromLonLat } from "ol/proj";
@@ -69,7 +73,7 @@ import { awareness } from "@/y_store";
 
 const center = ref([2.2945009486790244, 48.858287635592696]);
 const projection = ref("EPSG:4326");
-const zoom = ref(12);
+const zoom = ref(17);
 const rotation = ref(0);
 const view = ref();
 const map = ref(null);
@@ -82,6 +86,11 @@ const users = ref([]);
 const faking = ref(true);
 const follow_me = ref(true);
 // let featuresArray = ref(null);
+
+const radius = ref(4);
+const strokeWidth = ref(1);
+const strokeColor = ref("red");
+const fillColor = ref("white");
 
 
 const Feature = inject("ol-feature");
@@ -221,3 +230,16 @@ awareness.on('change', () /*changes */ => {
 
 
 </script>
+
+<style scoped>
+button {
+  border: 1px solid black;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+button:hover,
+button:focus {
+  background-color: lightgray;
+}
+</style>
