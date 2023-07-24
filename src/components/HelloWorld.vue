@@ -229,7 +229,11 @@ contextMenuItems.value = [
       rdv.value = {
         uuid: uuidv4(),
         author: awareness.clientID,
-        coordinates: val.coordinate
+        coordinates: val.coordinate,
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date().toISOString().split('T')[0],
+        start_time: "00:00",
+        end_time: "23:59"
       }
       // console.log(rdv)
       edit.value = true
@@ -396,13 +400,31 @@ const rdvsUpdate = (e) => {
     for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
       if (uuid != awareness.clientID) {
         console.log("uuid", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
-        console.log("uuid", uuid, /*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
-        const feature = new Feature({
-          geometry: new Geom.Point(rdv.coordinates),
-          name: rdv.title + rdv.start_date + rdv.end_date,
-          uuid: uuid
-        });
-        markers.value.source.addFeature(feature);
+        console.log("uuid", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
+
+        //date to timestamp  https://stackoverflow.com/questions/9873197/how-to-convert-date-to-timestamp 
+        if (rdv.end_date != undefined && rdv.end_time != undefined) {
+
+          // let d = rdv.end_date.split("-").join("/") + " " + rdv.end_time != undefined ? rdv.end_time : "23:59"
+          // console.log(d)
+          // let strDate = new Date(d)
+          // console.log(strDate, strDate.getTime())
+          // var datum = Date.parse(strDate);
+          // console.log(datum)
+
+
+
+          const feature = new Feature({
+            geometry: new Geom.Point(rdv.coordinates),
+            name: rdv.title, //+ rdv.start_date + rdv.end_date,
+            uuid: uuid
+          });
+          markers.value.source.addFeature(feature);
+
+        } else {
+          console.log(uuid, "no end_date")
+          delete ystore.rdvs[uuid]
+        }
       }
     }
   }
