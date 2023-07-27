@@ -14,7 +14,6 @@
         <ol-source-vector ref="markers"> </ol-source-vector>
 
         <ol-style :overrideStyleFunction="overrideStyleFunction">
-          <ol-style-fill :color="fillColor"></ol-style-fill>
           <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
           <ol-style-text text="Hellooooo"></ol-style-text>
         </ol-style>
@@ -23,7 +22,6 @@
 
       <ol-interaction-select @select="featureSelected" :condition="selectCondition" :features="selectedFeatures">
         <ol-style :overrideStyleFunction="overrideStyleFunction">
-          <ol-style-fill :color="fillColor"></ol-style-fill>
           <ol-style-icon :src="marker" :scale="0.1"></ol-style-icon>
           <ol-style-text color="white" text="Hellooooo"></ol-style-text>
         </ol-style>
@@ -68,6 +66,7 @@
     <BModal v-model="modal" @ok="onAddRdv">
 
 
+
       <BRow class="my-1" v-for="field in inputFields" :key="field.id">
         <BCol sm="3">
           <label :for="`type-${field.name}`"><code>{{ field.name }}</code>:</label>
@@ -76,7 +75,12 @@
           <BFormInput :disabled="!edit" :id="`type-${field.name}`" :type="field.type" v-model="rdv[field.id]"
             v-bind:min="field.min" />
         </BCol>
+
       </BRow>
+      <VueDatePicker placeholder="période de un jour max ;-)" v-model="date" model-auto range max-range="1"
+        disable-year-select locale="fr" :format-locale="fr" format="Pp" :disabled="!edit" ></VueDatePicker>
+
+        <!-- :format="format" :disabled-dates="disabledDates" -->
       <!-- <div class="mt-2">Value: {{ rdv }}</div> -->
     </BModal>
     <!-- 
@@ -93,11 +97,9 @@
 <script setup>
 import hereIcon from "@/assets/here.png";
 import marker from "@/assets/marker.png";
-import pin_drop from "@/assets/pin_drop.png";
-import pin_center from "@/assets/center.png";
 //import marker_user from "@/assets/marker_user.png";
 import * as Vue from "vue";
-import { ref, inject } from "vue";
+import { ref, inject, /*computed*/ } from "vue";
 import { store as ystore, awareness } from "@/y_store";
 import { enableVueBindings, observeDeep } from "@syncedstore/core";
 enableVueBindings(Vue);
@@ -111,6 +113,12 @@ import { Collection } from "ol";
 // import VectorSource from "ol/source/Vector";
 //import  { View } from "ol";
 //import  { ObjectEvent } from "ol/Object";
+import { fr } from 'date-fns/locale';
+
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+//const autorange = ref(1); // si on veut plus, banquer
+const date = ref();
 
 const center = ref([2.2945009486790244, 48.858287635592696]);
 const projection = ref("EPSG:4326");
@@ -171,6 +179,15 @@ function featureSelected(event) {
   // selectedFeatures.value = event.target.getFeatures();
 }
 
+// const format = (date) => {
+//   const day = date.getDate();
+//   const month = date.getMonth() + 1;
+//   const year = date.getFullYear();
+//   const hour = date.getHour()
+//   const min = date.getMinutes()
+
+//   return `${day}/${month}/${year} ${hour}:${min}`;
+// }
 
 // https://vue3openlayers.netlify.app/componentsguide/interactions/select/#usage
 // const selectConditions = inject("ol-selectconditions");
@@ -191,11 +208,10 @@ function featureSelected(event) {
 const inputFields = [
   { id: 'title', name: 'Title', type: 'text' },
   { id: 'desc', name: 'Description', type: 'text' },
-  { id: 'color', name: 'Color', type: 'color' },
-  { id: 'start_date', name: 'Start Date', type: 'date', min: new Date().toISOString().split('T')[0] },
-  { id: 'start_time', name: 'Start Time', type: 'time' },
-  { id: 'end_date', name: 'End Date', type: 'date', min: new Date().toISOString().split('T')[0] },
-  { id: 'end_time', name: 'End Time', type: 'time' },
+  // { id: 'start_date', name: 'Start Date', type: 'date', min: new Date().toISOString().split('T')[0] },
+  // { id: 'start_time', name: 'Start Time', type: 'time' },
+  // { id: 'end_date', name: 'End Date', type: 'date', min: new Date().toISOString().split('T')[0] },
+  // { id: 'end_time', name: 'End Time', type: 'time' },
 
 
   // 'number',
@@ -216,10 +232,23 @@ const inputFields = [
 
 let rdv = ref({})
 
+// For demo purposes disables the next 2 days from the current date
+// const disabledDates = computed((date) => {
+//   console.log(date)
+//   const today = new Date();
+
+//   const tomorrow = new Date(today)
+//   tomorrow.setDate(tomorrow.getDate() + 1)
+
+//   const afterTomorrow = new Date(tomorrow);
+//   afterTomorrow.setDate(tomorrow.getDate() + 1);
+
+//   return [tomorrow, afterTomorrow]
+// })
+
 contextMenuItems.value = [
   {
     text: "Center map here",
-    icon: pin_center, 
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
       view.value.setCenter(val.coordinate);
@@ -233,7 +262,7 @@ contextMenuItems.value = [
     text: "Add a rdv",
     classname: "some-style-class", // you can add this icon with a CSS class
     // instead of `icon` property (see next line)
-    icon: pin_drop, // this can be relative or absolute
+    icon: marker, // this can be relative or absolute
     callback: (val) => {
       // console.log(val);
       rdv.value = {
@@ -257,6 +286,21 @@ contextMenuItems.value = [
 
 
 const onAddRdv = () => {
+  console.log(date.value)
+  let [s, e] = date.value
+  console.log(s)
+  console.log(e)
+
+date.value = []
+let [start_date, start_time] = new Date(s).toISOString().split('T')
+let [end_date, end_time]  = new Date(e).toISOString().split('T')
+
+console.log(start_date, start_time, end_date, end_time)
+
+rdv.value.start_date = start_date
+rdv.value.start_time = start_time
+rdv.value.end_date = end_date
+rdv.value.end_time = end_time
 
   console.log(rdv.value)
 
