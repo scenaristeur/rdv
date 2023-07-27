@@ -217,10 +217,10 @@ contextMenuItems.value = [
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
       view.value.setCenter(val.coordinate);
-     // view.value.zoom = 17
-     // zoom.value = 17
-     // map.value.changed()
-     // view.value.setZoom(17)
+      // view.value.zoom = 17
+      // zoom.value = 17
+      // map.value.changed()
+      // view.value.setZoom(17)
     }, // `center` is your callback function
   },
   {
@@ -351,7 +351,7 @@ const updateUsers = (states) => {
     //  console.log(s.user.name, s.user.color, s.position?.coordinates)
     if (s.position != undefined && users.value != null && s.user.clientID != awareness.clientID && users.value.source != undefined) {
       let exist = users.value.source.getFeatures().find(f => f.get('clientID') == s.user.clientID)
-    //  console.log("exist? ", s.user.clientID, exist)
+      //  console.log("exist? ", s.user.clientID, exist)
 
       if (exist == undefined) {
 
@@ -403,9 +403,17 @@ const rdvsUpdate = (e) => {
     // e.forEach(position => { console.log("POS", position) })
     for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
       if (uuid != awareness.clientID) {
-        console.log("uuid", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
-        console.log("uuid", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
-
+        console.log("coordin", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
+        console.log("dates", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
+        let iso8601 = rdv.end_date + "T" + rdv.end_time + ":00Z"
+        let date = new Date(iso8601)
+        let now = Date.now()
+        console.log(now, date)
+        let diff = date.getTime() - now
+        if (diff < 0) {
+          delete ystore.rdvs[uuid]
+          return
+        }
         //date to timestamp  https://stackoverflow.com/questions/9873197/how-to-convert-date-to-timestamp 
         if (rdv.end_date != undefined && rdv.end_time != undefined) {
 
