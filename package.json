@@ -14,6 +14,7 @@
     "@vuepic/vue-datepicker": "^5.4.0",
     "bootstrap-vue-3": "^0.5.1",
     "core-js": "^3.8.3",
+    "crypto-js": "^4.1.1",
     "ol": "^7.4.0",
     "ol-contextmenu": "^5.2.1",
     "ol-ext": "^4.0.10",

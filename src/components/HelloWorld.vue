@@ -65,10 +65,32 @@
     <label for="follow_me">Follow me</label>
     <!-- <button @click="addMarker">Add Marker</button> -->
     <!-- <BButton @click="modal = !modal"> Toggle modal </BButton> -->
-    <BModal v-model="modal" @ok="onAddRdv">
+    <BModal v-model="modal" @ok="onAddRdv" size="lg">
+      <!--    :style="'backgroundColor:'+rdv.color" -->
+      <label for="datePicker"><code>When ?</code> <small v-if="edit == true"><i>7 days max</i></small></label>
+      <VueDatePicker id="datePicker" v-model="date" range partial-range max-range="7" :format-locale="fr" format="Pp"
+        :min-date="new Date()" :max-date="new Date(new Date().setDate(new Date().getDate() + 15))" :disabled="!edit" />
+
+      <div role="group">
+        <label for="input-live"><code>Title:</code></label>
+        <b-form-input id="input-live" v-model="rdv.title" :state="stateTitle" @input="titleState" :disabled="!edit"
+          aria-describedby="input-live-help input-live-feedback" placeholder="Title" trim></b-form-input>
+
+        <!-- This will only be shown if the preceding input has an invalid state -->
+        <b-form-invalid-feedback id="input-live-feedback">
+          Enter at least 3 and less than 50 letters
+        </b-form-invalid-feedback>
+
+        <!-- This is a form text block (formerly known as help block) -->
+        <b-form-text id="input-live-help">A cool title for your event.</b-form-text>
+      </div>
 
 
-      <BRow class="my-1" v-for="field in inputFields" :key="field.id">
+      <label for="textarea"><code>Description:</code></label>
+      <b-form-textarea id="textarea" v-model="rdv.description" placeholder="Description" rows="3" max-rows="6"
+        :disabled="!edit"></b-form-textarea>
+
+      <!--     <BRow class="my-1" v-for="field in inputFields" :key="field.id">
         <BCol sm="3">
           <label :for="`type-${field.name}`"><code>{{ field.name }}</code>:</label>
         </BCol>
@@ -76,7 +98,17 @@
           <BFormInput :disabled="!edit" :id="`type-${field.name}`" :type="field.type" v-model="rdv[field.id]"
             v-bind:min="field.min" />
         </BCol>
-      </BRow>
+      </BRow> -->
+      <b-row>
+        <b-col>
+          <label for="color"><code>Color:</code></label>
+          <b-form-input id="color" v-model="rdv.color" :disabled="!edit" type="color"></b-form-input>
+        </b-col>
+        <b-col>
+          <label for="password"><code>Password:</code></label>
+          <b-form-input id="password" v-model="password" placeholder="password protect" type="password"></b-form-input>
+        </b-col>
+      </b-row>
       <!-- <div class="mt-2">Value: {{ rdv }}</div> -->
     </BModal>
     <!-- 
@@ -103,6 +135,12 @@ import { enableVueBindings, observeDeep } from "@syncedstore/core";
 enableVueBindings(Vue);
 import { v4 as uuidv4 } from 'uuid';
 import { Collection } from "ol";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import { fr } from 'date-fns/locale';
+import sha256 from 'crypto-js/sha256';
+//import hmacSHA512 from 'crypto-js/hmac-sha512';
+import Base64 from 'crypto-js/enc-base64';
 // import { fromLonLat } from "ol/proj";
 // import Point from "ol/geom/Point";
 // import Icon from "ol/style/Icon";
@@ -136,12 +174,14 @@ const strokeWidth = ref(1);
 const strokeColor = ref("red");
 const fillColor = ref("white");
 
-
+const date = ref();
 const Feature = inject("ol-feature");
 const Geom = inject("ol-geom");
 const modal = ref(false)
 const edit = ref(false)
-
+const stateTitle = ref(false)
+let rdv = ref({})
+const password = ref()
 const selectedFeatures = ref(new Collection());
 //const modifyEnabled = ref(false);
 
@@ -151,9 +191,33 @@ const selectCondition = selectConditions.click;
 function featureSelected(event) {
   console.log(event)
   if (event.selected.length > 0) {
+    stateTitle.value = true
     let selected_uuid = event.selected[0].get('uuid')
     console.log("selected", event.selected[0], event.selected[0].get('uuid'))
     rdv.value = ystore.rdvs[selected_uuid]
+    let rdv_selected = ystore.rdvs[selected_uuid]
+
+    let start_date = rdv_selected.start_date
+    let start_time = rdv_selected.start_time
+    let end_date = rdv_selected.end_date
+    let end_time = rdv_selected.end_time
+
+    var datePartsStart = start_date.split("/");
+
+    // month is 0-based, that's why we need dataParts[1] - 1
+    start_date = new Date(+datePartsStart[2], datePartsStart[1] - 1, +datePartsStart[0]);
+
+    var datePartsEnd = end_date.split("/");
+
+    // month is 0-based, that's why we need dataParts[1] - 1
+    end_date = new Date(+datePartsEnd[2], datePartsEnd[1] - 1, +datePartsEnd[0]);
+    let st = start_time.split(":")
+    let et = end_time.split(":")
+    start_date.setHours(st[0], st[1], st[2])
+    end_date.setHours(et[0], et[1], et[2])
+    console.log(start_date, start_time, end_date, end_time);
+    date.value = [start_date, end_date]
+    console.log(date)
     console.log(rdv.value.author, 'if author = clientID, edit = true')
     // edit.value = rdv.value.author == awareness.clientID
     edit.value = false
@@ -186,40 +250,21 @@ function featureSelected(event) {
 //  // return feature.values_.name != undefined;
 // };
 
+const titleState = () => {
+
+  stateTitle.value = edit.value != true || (rdv.value.title.length > 2 && rdv.value.title.length < 51) ? true : false
+  // console.log("input",inp, stateTitle.value)
+}
 
 
-const inputFields = [
-  { id: 'title', name: 'Title', type: 'text' },
-  { id: 'desc', name: 'Description', type: 'text' },
-  { id: 'color', name: 'Color', type: 'color' },
-  { id: 'start_date', name: 'Start Date', type: 'date', min: new Date().toISOString().split('T')[0] },
-  { id: 'start_time', name: 'Start Time', type: 'time' },
-  { id: 'end_date', name: 'End Date', type: 'date', min: new Date().toISOString().split('T')[0] },
-  { id: 'end_time', name: 'End Time', type: 'time' },
 
 
-  // 'number',
-  // 'email',
-  // 'password',
-  // 'search',
-  // 'url',
-  // 'tel',
-  // 'date',
-  // 'time',
-  // 'range',
-  // 'color',
-  // 'datetime',
-  // 'datetime-local',
-  // 'month',
-  // 'week',
-]
 
-let rdv = ref({})
 
 contextMenuItems.value = [
   {
     text: "Center map here",
-    icon: pin_center, 
+    icon: pin_center,
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
       view.value.setCenter(val.coordinate);
@@ -235,16 +280,17 @@ contextMenuItems.value = [
     // instead of `icon` property (see next line)
     icon: pin_drop, // this can be relative or absolute
     callback: (val) => {
-      // console.log(val);
+
       rdv.value = {
         uuid: uuidv4(),
         author: awareness.clientID,
         coordinates: val.coordinate,
-        start_date: new Date().toISOString().split('T')[0],
-        end_date: new Date().toISOString().split('T')[0],
-        start_time: "00:00",
-        end_time: "23:59"
       }
+      if (date.value != undefined) {
+        date.value[0] = new Date()
+        date.value[1] = new Date()
+      }
+
       // console.log(rdv)
       edit.value = true
       modal.value = true
@@ -257,7 +303,14 @@ contextMenuItems.value = [
 
 
 const onAddRdv = () => {
-
+  console.log(date)
+  rdv.value.start_date = date.value[0].toLocaleDateString()
+  rdv.value.start_time = date.value[0].toLocaleTimeString()
+  rdv.value.end_date = date.value[1].toLocaleDateString()
+  rdv.value.end_time = date.value[1].toLocaleTimeString()
+  rdv.value.password = Base64.stringify(sha256(password.value));
+  password.value = ""
+  //console.log(date_start, time_start, date_end, time_end)
   console.log(rdv.value)
 
   rdv.value.updated = Date.now()
@@ -409,12 +462,12 @@ const rdvsUpdate = (e) => {
     // e.forEach(position => { console.log("POS", position) })
     for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
       if (uuid != awareness.clientID) {
-        console.log("coordin", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
-        console.log("dates", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
+        // console.log("coordin", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
+        //console.log("dates", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
         let iso8601 = rdv.end_date + "T" + rdv.end_time + ":00Z"
         let date = new Date(iso8601)
         let now = Date.now()
-        console.log(now, date)
+        //console.log(now, date)
         let diff = date.getTime() - now
         if (diff < 0) {
           delete ystore.rdvs[uuid]
