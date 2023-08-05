@@ -402,6 +402,10 @@ const geoLocChange = (event) => {
     coordinates: coordinates,
     updated: Date.now()
   })
+
+  rdvsUpdate()
+
+
 };
 
 const updateUsers = (states) => {
@@ -464,12 +468,22 @@ const rdvsUpdate = (e) => {
       if (uuid != awareness.clientID) {
         // console.log("coordin", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
         //console.log("dates", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
-        let iso8601 = rdv.end_date + "T" + rdv.end_time + ":00Z"
-        let date = new Date(iso8601)
+
+
+       // console.log(rdv.end_date, rdv.end_time)
+        var datePartsEnd = rdv.end_date.split("/");
+
+        // month is 0-based, that's why we need dataParts[1] - 1
+        let end_date = new Date(+datePartsEnd[2], datePartsEnd[1] - 1, +datePartsEnd[0]);
+        //let iso8601 = end_date + "T" + rdv.end_time + ":00Z"
+        let et = rdv.end_time.split(":")
+        let date = end_date.setHours(et[0], et[1], et[2])
+        //  console.log(end_date, rdv.end_time, /*iso8601,*/ date)
         let now = Date.now()
-        //console.log(now, date)
-        let diff = date.getTime() - now
-        if (diff < 0) {
+
+        let diff = date - now
+       // console.log("delete?", now, date, diff)
+        if (isNaN(date) || diff < 0) {
           delete ystore.rdvs[uuid]
           return
         }
@@ -490,7 +504,9 @@ const rdvsUpdate = (e) => {
             name: rdv.title, //+ rdv.start_date + rdv.end_date,
             uuid: uuid
           });
-          markers.value.source.addFeature(feature);
+          if (markers.value.source != undefined) {
+            markers.value.source.addFeature(feature);
+          }
 
         } else {
           console.log(uuid, "no end_date")
