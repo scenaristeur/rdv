@@ -1,5 +1,10 @@
 # rdv
 
+
+# todo
+- marker change https://stackoverflow.com/questions/9998568/how-to-change-openlayers-marker-icon
+
+
 ## Project setup
 ```
 npm install
@@ -29,3 +34,6 @@ https://socket.io/fr/docs/v4/middlewares/
 
 ## bootstarp 
 https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/components/form-checkbox.html
+
+
+

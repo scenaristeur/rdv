@@ -304,6 +304,7 @@ contextMenuItems.value = [
 
 const onAddRdv = () => {
   console.log(date)
+  if (date.value[1] == null){date.value[1] = date.value[0]}
   rdv.value.start_date = date.value[0].toLocaleDateString()
   rdv.value.start_time = date.value[0].toLocaleTimeString()
   rdv.value.end_date = date.value[1].toLocaleDateString()
@@ -459,8 +460,9 @@ awareness.on('change', () /*changes */ => {
 
 
 
-const rdvsUpdate = (e) => {
-  console.log(e)
+const rdvsUpdate = () => {
+  console.log('rdvs update')
+ // console.log(e)
   if (markers.value != null) {
     // markers.value.getSource().clear()
     // e.forEach(position => { console.log("POS", position) })
