@@ -1,6 +1,13 @@
 <template>
-    <div>
+   
+
         <div>
+
+<!-- profiles: {{  profiles }}
+<br>
+profile {{ profile }} -->
+
+
             <BButton @click="showProfile = !showProfile" variant="info"> Profil</BButton>
             <BButton @click="followMe" :variant="centerMe == true ? 'outline-warning' : 'outline-success'"> {{ centerMe ==
                 true ? "don't follow me" : "follow me" }}</BButton>
@@ -49,7 +56,7 @@
                                     X
                                 </span>
                             </button>
-                            <div class="row">
+                            <div class="row" v-if="p.interests.length <5">
                                 <label class="col-form-label col-2" for="inline-form-input-profile">intérêt</label>
                                 <div class="col-8">
                                     <BFormInput v-model="new_interest" :value="new_interest" placeholder="nouvel interêt"
@@ -77,7 +84,7 @@
 
             </BModal>
         </div>
-    </div>
+  
 </template>
 
 <script>
@@ -111,10 +118,12 @@ export default {
         console.log("localstorage user", user)
         if (user && user.name && user.color) {
             this.user = user
-            let { profiles, profile } = JSON.parse(localStorage.getItem('rdv_user_interests'))
-            console.log("from localstorage", profiles, profile)
-            this.$store.commit('core/setProfiles', profiles)
-            this.$store.commit('core/setProfile', profile)
+            let interests = JSON.parse(localStorage.getItem('rdv_user_interests'))
+            if(interests != undefined){
+            console.log("from localstorage", interests.profiles, interests.profile)
+            this.$store.commit('core/setProfiles', interests.profiles)
+            this.$store.commit('core/setProfile', interests.profile)
+        }
         }
         // if(user.clientID) awareness.clientID = user.clientID
 
@@ -146,7 +155,7 @@ export default {
             if (this.profile_name.trim().length > 0) {
                 let profil = {
                     name: this.profile_name,
-                    interests: ["js", "rest"]
+                    interests: []
                 }
                 this.$store.commit('core/addProfile', profil)
                 this.profile_name = ""
@@ -171,7 +180,7 @@ export default {
             console.log("update interests")
             awareness.setLocalStateField('interests', {
                 // Define a print name that should be displayed
-                like: this.profiles[this.profile]
+                like: this.profiles.find((p) => p.id == this.profile)
             })
             localStorage.setItem('rdv_user_interests', JSON.stringify({ profiles: this.profiles, profile: this.profile }))
         },

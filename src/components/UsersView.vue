@@ -8,18 +8,34 @@
             <div>
                 <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#" @click="userClicked(u)">
                     <h2>{{ u.profile.name }}</h2>
-                    u.clientID {{ u.clientID }}
+                    <!-- u.clientID {{ u.clientID }}
                     <br>
                     u.profile.clientID {{ u.profile.clientID }}
+                    <br>
+                    awareness.clientID : {{ awareness.clientID }} -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="user_color" :style="'width:20px;height:20px;background-color:' + u.profile.color" />
+                        </div>
+                        <div class="col">
+                            distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
+                        </div>
+                        <div class="col">
+                            <div
+                                v-if="u.interests != undefined && u.interests.like != undefined && u.interests.like.interests != undefined && profiles.length > 0">
+                                <BBadge v-for="i in  u.interests.like.interests" :key="i" :variant="getInterestVariant(i)">
+                                    {{ i
+                                    }}</BBadge>
+                            </div>
+                        </div>
 
-                    <div class="user_color" :style="'width:20px;height:20px;background-color:' + u.profile.color" />
-
-                    distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
-                    {{ u.interests }}
-                    <div v-if="u.interests.like != undefined">
-                        <BBadge v-for="i in  u.interests.like.interests" :key="i"
-                            :variant="profiles[profile].interests.includes(i) ? 'info' : 'light'">{{ i }}</BBadge>
                     </div>
+
+
+
+
+                    <!-- {{ u.interests }} -->
+
 
                 </BListGroupItem>
             </div>
@@ -55,7 +71,8 @@ export default {
             // Whenever somebody updates their awareness information,
             // we log all awareness information from all users.
             // console.log(Array.from(awareness.getStates().values()))
-            this.updateUsers(Array.from(awareness.getStates().values()).filter((u) => u.profile.clientID != awareness.clientID))
+            this.updateUsers(Array.from(awareness.getStates().values()).filter((u) => u.profile != undefined && u.profile.clientID != awareness.clientID))
+
         })
     },
     methods: {
@@ -116,6 +133,11 @@ export default {
 
         deg2rad(deg) {
             return deg * (Math.PI / 180)
+        },
+        getInterestVariant(i) {
+            let p = this.profiles.find((p) => p.id == this.profile)
+            return p != undefined && p.interests.includes(i) ? 'info' : 'light'
+
         }
     },
     computed: {
