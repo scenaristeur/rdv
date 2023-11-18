@@ -7,7 +7,7 @@
         </ol-tile-layer>
 
 
-        <ol-interaction-select @select="featureSelected" :condition="selectCondition" :filter="selectInteactionFilter">
+        <ol-interaction-select @select="featureSelected">
             <ol-style>
                 <!-- <ol-style-stroke color="green" :width="10"></ol-style-stroke>
         <ol-style-fill color="rgba(255,255,255,0.5)"></ol-style-fill>
