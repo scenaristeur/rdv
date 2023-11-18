@@ -20,11 +20,31 @@
                 </ol-vector-layer>
             </template>
         </ol-geolocation>
+        <ol-vector-layer>
+            <ol-source-vector>
+                <ol-feature>
+                    <ol-geom-multi-point :coordinates="coordinates"></ol-geom-multi-point>
+                    <ol-style>
+                        <ol-style-circle :radius="radius">
+                            <ol-style-fill :color="fillColor"></ol-style-fill>
+                            <ol-style-stroke :color="strokeColor" :width="strokeWidth"></ol-style-stroke>
+                        </ol-style-circle>
+                    </ol-style>
+                </ol-feature>
+            </ol-source-vector>
+        </ol-vector-layer>
     </ol-map>
 </template>
 
 <script>
+// import { inject } from "vue";
 import hereIcon from "@/assets/here.png";
+import { awareness } from "@/y_store";
+// const Feature = inject("ol-feature");
+// const Geom = inject("ol-geom");
+// console.log("Feature", Feature)
+
+
 export default {
     name: "MapComponent",
     components: {
@@ -32,7 +52,7 @@ export default {
     },
     data() {
         return {
-            initialisation :true,
+            initialisation: true,
             // view
             center: [47.41322, -1.219482],
             rotation: 0,
@@ -40,7 +60,31 @@ export default {
             projection: "EPSG:4326",
             // geolocation
             position: [],
-            hereIcon: hereIcon
+            hereIcon: hereIcon,
+            // userMarkers: [],
+            radius: 10,
+            strokeWidth: 4,
+            strokeColor: "red",
+            fillColor: "white",
+            coordinates: []
+            // [
+            //             [116.544921, 40.451633],
+            //             [116.545264, 40.451649],
+            //             [116.545865, 40.451698],
+            //             [116.546144, 40.451551],
+            //             [116.546337, 40.451274],
+            //             [116.546788, 40.451143],
+            //             [116.547324, 40.451078],
+            //             [116.547539, 40.450996],
+            //             [116.547839, 40.450719],
+            //             [116.54844, 40.450506],
+            //             [116.548933, 40.450604],
+            //             [116.549448, 40.450604],
+            //             [116.550242, 40.450376],
+            //             [116.550865, 40.450163],
+            //             [116.551702, 40.449935],
+            //             [116.552581, 40.449576],
+            //         ]
         };
     },
 
@@ -51,13 +95,54 @@ export default {
             //     this.initialisation = false
             // }
             this.position = event.target.getPosition();
-            console.log("AAAAA", event);
-            this.$refs.view.setCenter(event.target.getPosition());
-   
-        }
+            this.$store.commit('core/updateMyPosition', this.position)
 
-    },
-}
+            this.$refs.view.setCenter(event.target.getPosition());
+            awareness.setLocalStateField('position', {
+                // Define a print name that should be displayed
+                coordinates: this.position,
+                updated: Date.now()
+            })
+        },
+        updateUserMarkers() {
+            console.log("users in map", this.users)
+            console.log("markers", this.userMarkers)
+            this.coordinates = this.users.map((u) => {
+                return u.position && u.position.coordinates || []
+            })
+            // this.users.forEach(s => {
+            //     let exist = this.$refs.userMarkers.source.getFeatures().find(f => f.get('clientID') == s.profile.clientID)
+            //     console.log(exist)
+            //     if (exist == false || exist == undefined) {
+
+            //         const feature = new Feature({
+            //             geometry: new Geom.Point(s.position.coordinates),
+            //             name: s.profile.name,
+            //             color: s.profile.color,
+            //             clientID: s.profile.clientID
+            //         });
+            //         // console.log("feature", feature, markers.value.source.getFeatures())
+            //         // console.log("find existing marker by values.clientID in  markers.value.source.getFeatures",)
+
+            //         this.$refs.userMarkers.source.addFeature(feature);
+            //     } else {
+            //         exist.getGeometry().setCoordinates(s.position.coordinates)
+            //     }
+            // })
+            }
+        },
+        watch: {
+            users() {
+                this.updateUserMarkers()
+            }
+        },
+        computed: {
+            users() {
+                return this.$store.state.core.users
+            },
+
+        }
+    }
 </script>
 
 <style scoped></style>
