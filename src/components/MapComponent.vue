@@ -7,6 +7,20 @@
         </ol-tile-layer>
 
 
+        <ol-interaction-select @select="featureSelected" :condition="selectCondition" :filter="selectInteactionFilter">
+            <ol-style>
+                <!-- <ol-style-stroke color="green" :width="10"></ol-style-stroke>
+        <ol-style-fill color="rgba(255,255,255,0.5)"></ol-style-fill>
+        <ol-style-icon :src="hereIcon" :scale="0.05"></ol-style-icon> -->
+                <ol-style-circle :radius="radius * 2">
+                    <ol-style-fill color="green"></ol-style-fill>
+                    <ol-style-stroke color="red" :width="strokeWidth"></ol-style-stroke>
+                    <ol-style-text text="selected"></ol-style-text>
+
+                </ol-style-circle>
+            </ol-style>
+        </ol-interaction-select>
+
         <ol-geolocation :projection="projection" @change:position="geoLocChange">
             <template>
                 <ol-vector-layer :zIndex="2">
@@ -23,10 +37,11 @@
         </ol-geolocation>
         <ol-vector-layer>
             <ol-source-vector>
-                <ol-feature v-for="(u,i) in users" :key="i">
-                    <ol-geom-multi-point v-if="u.position != undefined" :coordinates="u.position.coordinates"></ol-geom-multi-point>
+                <ol-feature v-for="(u, i) in users" :key="i">
+                    <ol-geom-multi-point v-if="u.position != undefined"
+                        :coordinates="u.position.coordinates"></ol-geom-multi-point>
                     <ol-style>
-                        <ol-style-circle :radius="radius" @click="userMapClicked">
+                        <ol-style-circle :radius="radius">
                             <ol-style-fill :color="fillColor"></ol-style-fill>
                             <ol-style-stroke :color="u.profile.color" :width="strokeWidth"></ol-style-stroke>
                             <ol-style-text :text="u.profile.name"></ol-style-text>
@@ -92,6 +107,14 @@ export default {
     },
 
     methods: {
+        featureSelected(event) {
+            console.log("feature selected", event.selected, event.target)
+            if (event.selected.length > 0) {
+                let selected_uuid = event.selected[0].get('uuid')
+                console.log("selected", event.selected[0], selected_uuid)
+
+            }
+        },
         geoLocChange(event) {
             // if(this.initialisation == true){
             //     this.zoom = 15
@@ -153,7 +176,7 @@ export default {
         centerUser() {
             console.log(this.centerUser)
             this.$refs.view.setCenter(this.centerUser);
-           // this.$refs.view.setZoom(15);
+            // this.$refs.view.setZoom(15);
         }
     },
     computed: {
