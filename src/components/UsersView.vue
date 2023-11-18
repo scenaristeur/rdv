@@ -47,10 +47,9 @@
 </template>
 
 <script>
-import * as Vue from "vue";
-import { store as ystore, awareness } from "@/y_store";
-import { enableVueBindings, observeDeep } from "@syncedstore/core";
-enableVueBindings(Vue);
+
+import {  awareness } from "@/y_store";
+
 
 
 export default {
@@ -65,7 +64,7 @@ export default {
     created() {
         // console.log(ystore, awareness),
 
-        observeDeep(ystore.rdvs, this.rdvsUpdate)
+      
         awareness.on('change', () /*changes */ => {
             // console.log("changes", changes)
             // Whenever somebody updates their awareness information,
@@ -79,13 +78,11 @@ export default {
         userClicked(user) {
             console.log(user)
             if (user.position != undefined) {
-                this.$store.commit('core/centerToUser', user.position.coordinates)
+                this.$store.commit('core/centerToPoint', user.position.coordinates)
             }
 
         },
-        rdvsUpdate(e) {
-            console.log("RDVUPDATE", e)
-        },
+
         updateUsers(users) {
             console.log('UPDATE USERS', users)
             this.users = this.withDistances(users).sort(function (a, b) {

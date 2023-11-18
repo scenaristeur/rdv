@@ -1,90 +1,97 @@
 <template>
-   
+    <div>
 
-        <div>
-
-<!-- profiles: {{  profiles }}
+        <!-- profiles: {{  profiles }}
 <br>
 profile {{ profile }} -->
 
-
+        <b-button-group>
             <BButton @click="showProfile = !showProfile" variant="info"> Profil</BButton>
             <BButton @click="followMe" :variant="centerMe == true ? 'outline-warning' : 'outline-success'"> {{ centerMe ==
                 true ? "don't follow me" : "follow me" }}</BButton>
-            <BButton @click="addRdv" variant="success"> rdv</BButton>
-            <BModal v-model="showProfile" @ok="updateUser">
-                <BForm>
-                    <div class="row">
-                        <label class="col-form-label col-2" for="inline-form-input-name">Nom</label>
-                        <div class="col-8">
-                            <BFormInput id="inline-form-input-name" class="mb-2 me-sm-2 mb-sm-0" v-model="user.name"
-                                placeholder="username" />
-                        </div>
-                        <div class="col-2">
-                            <BFormInput v-model="user.color" type="color" />
-                        </div>
+            <!-- <BButton @click="addRdv" variant="success"> rdv</BButton> -->
+
+        </b-button-group>&nbsp;&nbsp;&nbsp;
+        <b-button-group>
+            <b-button @click="setView('users')">Users</b-button>
+            <b-button @click="setView('rdv')">Rdv</b-button>
+
+        </b-button-group>
+
+
+        <BModal v-model="showProfile" @ok="updateUser">
+            <BForm>
+                <div class="row">
+                    <label class="col-form-label col-2" for="inline-form-input-name">Nom</label>
+                    <div class="col-8">
+                        <BFormInput id="inline-form-input-name" class="mb-2 me-sm-2 mb-sm-0" v-model="user.name"
+                            placeholder="username" />
                     </div>
-
-
-                    <div class="row">
-                        <label class="col-form-label col-2" for="inline-form-input-profile">Profil</label>
-                        <div class="col-8">
-                            <BFormInput id="inline-form-input-profile" v-model="profile_name" placeholder="profile name" @keyup.enter="addProfile" />
-                        </div>
-                        <div class="col-2">
-                            <BButton @click="addProfile"> +</BButton>
-                        </div>
+                    <div class="col-2">
+                        <BFormInput v-model="user.color" type="color" />
                     </div>
+                </div>
+
+
+                <div class="row">
+                    <label class="col-form-label col-2" for="inline-form-input-profile">Profil</label>
+                    <div class="col-8">
+                        <BFormInput id="inline-form-input-profile" v-model="profile_name" placeholder="profile name"
+                            @keyup.enter="addProfile" />
+                    </div>
+                    <div class="col-2">
+                        <BButton @click="addProfile"> +</BButton>
+                    </div>
+                </div>
 
 
 
-                    {{ profile }}
+                {{ profile }}
 
-                    <BListGroup>
-                        <BListGroupItem v-for="p in profiles" :key="p.id" href="#" :active="profile == p.id"
-                            @click="changeProfile(p.id)">
-                            <h6 style="margin-bottom: 30px;">{{ p.name }}</h6>
-                            <!-- {{ p.interests }} -->
+                <BListGroup>
+                    <BListGroupItem v-for="p in profiles" :key="p.id" href="#" :active="profile == p.id"
+                        @click="changeProfile(p.id)">
+                        <h6 style="margin-bottom: 30px;">{{ p.name }}</h6>
+                        <!-- {{ p.interests }} -->
 
 
-                            <button v-for="i in p.interests" :key="i" type="button" class="btn btn-dark position-relative"
-                                style="margin-right:'5px'">
-                                {{ i }}
-                                <span
-                                    class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
-                                    @click="remove_interest({ profil: p.id, interest: i })">
-                                    X
-                                </span>
-                            </button>
-                            <div class="row" v-if="p.interests.length <5">
-                                <label class="col-form-label col-2" for="inline-form-input-profile">intérêt</label>
-                                <div class="col-8">
-                                    <BFormInput v-model="new_interest" :value="new_interest" placeholder="nouvel interêt"
+                        <button v-for="i in p.interests" :key="i" type="button" class="btn btn-dark position-relative"
+                            style="margin-right:'5px'">
+                            {{ i }}
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                                @click="remove_interest({ profil: p.id, interest: i })">
+                                X
+                            </span>
+                        </button>
+                        <div class="row" v-if="p.interests.length < 5">
+                            <label class="col-form-label col-2" for="inline-form-input-profile">intérêt</label>
+                            <div class="col-8">
+                                <BFormInput v-model="new_interest" :value="new_interest" placeholder="nouvel interêt"
                                     @keyup.enter="addInteret({ profil: p.id, })" />
-                                </div>
-                                <div class="col-2">
-                                    <BButton @click="addInteret({ profil: p.id, })"> +</BButton>
-                                </div>
                             </div>
+                            <div class="col-2">
+                                <BButton @click="addInteret({ profil: p.id, })"> +</BButton>
+                            </div>
+                        </div>
 
 
 
 
-                            <!-- <BFormInput v-model="p.interests" placeholder="centres d'interets séparés par une virgule" /> -->
-                            <!-- <SimpleTypeahead id="typeahead_id" placeholder="ajoute des centres d'intérêt"
+                        <!-- <BFormInput v-model="p.interests" placeholder="centres d'interets séparés par une virgule" /> -->
+                        <!-- <SimpleTypeahead id="typeahead_id" placeholder="ajoute des centres d'intérêt"
                                 :items="['One', 'Two', 'Three']" :minInputLength="1" v-model="p.interests"
                                 :itemProjection="itemProjectionFunction" @selectItem="selectItemEventHandler"
                                 @onInput="onInputEventHandler" @onFocus="onFocusEventHandler" @onBlur="onBlurEventHandler">
                             </SimpleTypeahead> -->
 
-                        </BListGroupItem>
+                    </BListGroupItem>
 
-                    </BListGroup>
-                </BForm>
+                </BListGroup>
+            </BForm>
 
-            </BModal>
-        </div>
-  
+        </BModal>
+    </div>
 </template>
 
 <script>
@@ -119,11 +126,11 @@ export default {
         if (user && user.name && user.color) {
             this.user = user
             let interests = JSON.parse(localStorage.getItem('rdv_user_interests'))
-            if(interests != undefined){
-            console.log("from localstorage", interests.profiles, interests.profile)
-            this.$store.commit('core/setProfiles', interests.profiles)
-            this.$store.commit('core/setProfile', interests.profile)
-        }
+            if (interests != undefined) {
+                console.log("from localstorage", interests.profiles, interests.profile)
+                this.$store.commit('core/setProfiles', interests.profiles)
+                this.$store.commit('core/setProfile', interests.profile)
+            }
         }
         // if(user.clientID) awareness.clientID = user.clientID
 
@@ -163,8 +170,9 @@ export default {
                 alert("ajoutez un nom de profil")
             }
         },
-        addRdv() {
+        setView(v) {
             console.log('add rdv')
+            this.$store.commit('core/setView', v)
         },
         updateUser() {
             console.log("User", this.user)

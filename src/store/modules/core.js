@@ -10,7 +10,9 @@ const state = () => ({
   myPosition: [],
   users: [],
   centerMe: true,
-  centerUser: [],
+  centerPoint: [],
+  view: "users",
+  rdvs: []
 });
 
 const mutations = {
@@ -33,14 +35,19 @@ const mutations = {
   centerMe(state, v) {
     state.centerMe = v;
   },
-  centerToUser(state, coordinates) {
-    state.centerUser = coordinates;
+  centerToPoint(state, coordinates) {
+    state.centerPoint = coordinates;
   },
   addProfile(state, p) {
     p.id = uuidv4();
     state.profiles.push(p);
   },
-
+  setView(state, v) {
+    state.view = v;
+  },
+  setRdvs(state, rdvs) {
+    state.rdvs = rdvs;
+  },
   // setConfig(state, c) {
   //   state.config = c
   // }

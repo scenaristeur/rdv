@@ -53,12 +53,10 @@
                     </ol-style>
                 </ol-feature> -->
                 </ol-source-vector>
-
-
-
             </ol-vector-layer>
 
-            <ol-vector-layer>
+            <!-- users -->
+                        <ol-vector-layer>
                 <ol-source-vector>
                     <ol-feature v-for="(u, i) in users" :key="i">
                         <ol-geom-multi-point v-if="u.position != undefined"
@@ -70,6 +68,30 @@
                                 <ol-style-text :text="u.profile.name"></ol-style-text>
 
                             </ol-style-circle>
+                        </ol-style>
+                    </ol-feature>
+                </ol-source-vector>
+            </ol-vector-layer>
+
+
+            <!-- RDVS-->
+
+            <ol-vector-layer>
+                <ol-source-vector>
+                    <ol-feature v-for="r in rdvs" :key="r.uuid">
+                        <ol-geom-multi-point v-if="r.coordinates != undefined"
+                            :coordinates="r.coordinates"></ol-geom-multi-point>
+                        <ol-style>
+                            <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
+                            <ol-style-text :text="r.title"></ol-style-text>
+                            <ol-style-stroke :color="r.color|| 'yellow'" :width="strokeWidth"></ol-style-stroke>
+
+                            <!-- <ol-style-circle :radius="radius">
+                                <ol-style-fill :color="r.color|| 'yellow'"></ol-style-fill>
+                                <ol-style-stroke color="blue" :width="strokeWidth"></ol-style-stroke>
+                                <ol-style-text :text="r.title"></ol-style-text>
+
+                            </ol-style-circle> -->
                         </ol-style>
                     </ol-feature>
                 </ol-source-vector>
@@ -268,37 +290,37 @@ export default {
         userMapClicked(e) {
             console.log(e)
         },
-        updateUserMarkers() {
-            console.log("users in map", this.users)
-            //console.log("markers", this.userMarkers)
-            // this.coordinates = this.users.map((u) => {
-            //     return u.position && u.position.coordinates || []
-            // })
-            // this.users.forEach(s => {
-            //     let exist = this.$refs.userMarkers.source.getFeatures().find(f => f.get('clientID') == s.profile.clientID)
-            //     console.log(exist)
-            //     if (exist == false || exist == undefined) {
+        // updateUserMarkers() {
+        //     console.log("users in map", this.users)
+        //     //console.log("markers", this.userMarkers)
+        //     // this.coordinates = this.users.map((u) => {
+        //     //     return u.position && u.position.coordinates || []
+        //     // })
+        //     // this.users.forEach(s => {
+        //     //     let exist = this.$refs.userMarkers.source.getFeatures().find(f => f.get('clientID') == s.profile.clientID)
+        //     //     console.log(exist)
+        //     //     if (exist == false || exist == undefined) {
 
-            //         const feature = new Feature({
-            //             geometry: new Geom.Point(s.position.coordinates),
-            //             name: s.profile.name,
-            //             color: s.profile.color,
-            //             clientID: s.profile.clientID
-            //         });
-            //         // console.log("feature", feature, markers.value.source.getFeatures())
-            //         // console.log("find existing marker by values.clientID in  markers.value.source.getFeatures",)
+        //     //         const feature = new Feature({
+        //     //             geometry: new Geom.Point(s.position.coordinates),
+        //     //             name: s.profile.name,
+        //     //             color: s.profile.color,
+        //     //             clientID: s.profile.clientID
+        //     //         });
+        //     //         // console.log("feature", feature, markers.value.source.getFeatures())
+        //     //         // console.log("find existing marker by values.clientID in  markers.value.source.getFeatures",)
 
-            //         this.$refs.userMarkers.source.addFeature(feature);
-            //     } else {
-            //         exist.getGeometry().setCoordinates(s.position.coordinates)
-            //     }
-            // })
-        }
+        //     //         this.$refs.userMarkers.source.addFeature(feature);
+        //     //     } else {
+        //     //         exist.getGeometry().setCoordinates(s.position.coordinates)
+        //     //     }
+        //     // })
+        // }
     },
     watch: {
-        users() {
-            this.updateUserMarkers()
-        },
+        // users() {
+        //     this.updateUserMarkers()
+        // },
         centerMe() {
             if (this.centerMe == true) {
                 console.log("center me", this.centerMe)
@@ -306,9 +328,9 @@ export default {
                 this.$refs.view.setCenter(this.position);
             }
         },
-        centerUser() {
-            console.log(this.centerUser)
-            this.$refs.view.setCenter(this.centerUser);
+        centerPoint() {
+            console.log(this.centerPoint)
+            this.$refs.view.setCenter(this.centerPoint);
             // this.$refs.view.setZoom(15);
         }
     },
@@ -316,11 +338,14 @@ export default {
         users() {
             return this.$store.state.core.users
         },
+        rdvs() {
+            return this.$store.state.core.rdvs
+        },
         centerMe() {
             return this.$store.state.core.centerMe
         },
-        centerUser() {
-            return this.$store.state.core.centerUser
+        centerPoint() {
+            return this.$store.state.core.centerPoint
         },
 
     }
