@@ -36,11 +36,30 @@
             </template>
         </ol-geolocation>
 
+        <ol-context-menu-control :items="contextMenuItems" />
 
+        <ol-vector-layer>
+            <ol-source-vector ref="markers"> 
+            <ol-style>
+              <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
+            </ol-style>
+
+
+            <!-- <ol-source-vector ref="markers">
+                <ol-feature :coordinates="coordinates">
+                    <ol-style>
+                        <ol-style-icon :src="hereIcon" :scale="0.1"></ol-style-icon>
+                    </ol-style>
+                </ol-feature> -->
+            </ol-source-vector>
+
+
+
+          </ol-vector-layer>
 
         <ol-vector-layer>
             <ol-source-vector>
-                <ol-feature v-for="(u, i) in users" :key="i" >
+                <ol-feature v-for="(u, i) in users" :key="i">
                     <ol-geom-multi-point v-if="u.position != undefined"
                         :coordinates="u.position.coordinates"></ol-geom-multi-point>
                     <ol-style>
@@ -59,11 +78,18 @@
 
 <script>
 // import { inject } from "vue";
+import marker from "@/assets/marker.png";
 import hereIcon from "@/assets/here.png";
 import { awareness } from "@/y_store";
 // const Feature = inject("ol-feature");
 // const Geom = inject("ol-geom");
-// console.log("Feature", Feature)
+import Feature from "ol/Feature";
+// import  Geometry from "ol/geom/Geometry";
+// console.log("Geometry", Geometry)
+import Point from "ol/geom/Point";
+
+
+
 
 
 export default {
@@ -82,12 +108,14 @@ export default {
             // geolocation
             position: [],
             hereIcon: hereIcon,
+            marker: marker,
             // userMarkers: [],
             radius: 10,
             strokeWidth: 4,
             strokeColor: "red",
             fillColor: "white",
-            coordinates: []
+            coordinates: [],
+              contextMenuItems: null
             // [
             //             [116.544921, 40.451633],
             //             [116.545264, 40.451649],
@@ -108,8 +136,39 @@ export default {
             //         ]
         };
     },
+    created() {
+        this.initContextMenu()
+    },
 
     methods: {
+        initContextMenu() {
+            let app = this
+            this.contextMenuItems = [
+                {
+                    text: "Center map here",
+                    classname: "some-style-class", // add some CSS rules
+                    callback: (val) => {
+                        app.$refs.view.setCenter(val.coordinate);
+                    }, // `center` is your callback function
+                },
+                {
+                    text: "Add a Marker",
+                    classname: "some-style-class", // you can add this icon with a CSS class
+                    // instead of `icon` property (see next line)
+                    icon: marker, // this can be relative or absolute
+                    callback: (val) => {
+                        console.log(val);
+                        const feature = new Feature({
+                            geometry: new Point(val.coordinate),
+                        });
+                        console.log("new feature",feature)
+                        app.$refs.markers.source.addFeature(feature);
+                        // console.log(app.markers)
+                    },
+                },
+                "-", // this is a separator
+            ];
+        },
         featureSelected(event) {
             console.log("feature selected", event.selected, event.target)
             if (event.selected.length > 0) {

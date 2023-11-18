@@ -18,7 +18,7 @@
                             <div class="user_color" :style="'width:20px;height:20px;background-color:' + u.profile.color" />
                         </div>
                         <div class="col">
-                            distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
+                            {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
                         </div>
                         <div class="col">
                             <div
