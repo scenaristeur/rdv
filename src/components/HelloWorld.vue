@@ -14,6 +14,7 @@
         <ol-source-vector ref="markers"> </ol-source-vector>
 
         <ol-style :overrideStyleFunction="overrideStyleFunction">
+          <ol-style-fill :color="fillColor"></ol-style-fill>
           <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
           <ol-style-text text="Hellooooo"></ol-style-text>
         </ol-style>
@@ -22,6 +23,7 @@
 
       <ol-interaction-select @select="featureSelected" :condition="selectCondition" :features="selectedFeatures">
         <ol-style :overrideStyleFunction="overrideStyleFunction">
+          <ol-style-fill :color="fillColor"></ol-style-fill>
           <ol-style-icon :src="marker" :scale="0.1"></ol-style-icon>
           <ol-style-text color="white" text="Hellooooo"></ol-style-text>
         </ol-style>
@@ -61,6 +63,9 @@
     &nbsp;&nbsp;
     <input type="checkbox" id="follow_me" ref="follow_me" checked v-model="follow_checked" />
     <label for="follow_me">Follow me</label>
+<br>
+    <textarea name="my_interest" id="" cols="30" rows="10"></textarea>
+    
     <!-- <button @click="addMarker">Add Marker</button> -->
     <!-- <BButton @click="modal = !modal"> Toggle modal </BButton> -->
     <BModal v-model="modal" @ok="onAddRdv">
@@ -91,6 +96,8 @@
 <script setup>
 import hereIcon from "@/assets/here.png";
 import marker from "@/assets/marker.png";
+import pin_drop from "@/assets/pin_drop.png";
+import pin_center from "@/assets/center.png";
 //import marker_user from "@/assets/marker_user.png";
 import * as Vue from "vue";
 import { ref, inject } from "vue";
@@ -187,6 +194,7 @@ function featureSelected(event) {
 const inputFields = [
   { id: 'title', name: 'Title', type: 'text' },
   { id: 'desc', name: 'Description', type: 'text' },
+  { id: 'color', name: 'Color', type: 'color' },
   { id: 'start_date', name: 'Start Date', type: 'date', min: new Date().toISOString().split('T')[0] },
   { id: 'start_time', name: 'Start Time', type: 'time' },
   { id: 'end_date', name: 'End Date', type: 'date', min: new Date().toISOString().split('T')[0] },
@@ -214,6 +222,7 @@ let rdv = ref({})
 contextMenuItems.value = [
   {
     text: "Center map here",
+    icon: pin_center, 
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
       view.value.setCenter(val.coordinate);
@@ -227,7 +236,7 @@ contextMenuItems.value = [
     text: "Add a rdv",
     classname: "some-style-class", // you can add this icon with a CSS class
     // instead of `icon` property (see next line)
-    icon: marker, // this can be relative or absolute
+    icon: pin_drop, // this can be relative or absolute
     callback: (val) => {
       // console.log(val);
       rdv.value = {
