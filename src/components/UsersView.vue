@@ -5,14 +5,14 @@
         <!-- {{  users }} -->
 
         <BListGroup v-if="users.length > 0" class="users_list">
-            <div >
-                <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#">
+            <div>
+                <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#" @click="userClicked(u)">
                     <h2>{{ u.profile.name }}</h2>
                     <!-- u.clientID {{ u.clientID }}
                 <br>
                 u.profile.clientID {{ u.profile.clientID }} -->
 
-<div class="user_color" :style="'width:20px;height:20px;background-color:'+u.profile.color"/>
+                    <div class="user_color" :style="'width:20px;height:20px;background-color:' + u.profile.color" />
 
                     distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
                     <!-- interests  -->
@@ -59,6 +59,13 @@ export default {
         })
     },
     methods: {
+        userClicked(user) {
+            console.log(user)
+            if(user.position != undefined){
+                this.$store.commit('core/centerToUser',user.position.coordinates)
+            }
+        
+        },
         rdvsUpdate(e) {
             console.log("RDVUPDATE", e)
         },
@@ -133,6 +140,7 @@ export default {
     background-color: black;
     padding: 1px;
 }
+
 /* .user_color{
     width: "20px";
     height: "20px";

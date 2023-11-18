@@ -6,6 +6,7 @@
             <ol-source-osm />
         </ol-tile-layer>
 
+
         <ol-geolocation :projection="projection" @change:position="geoLocChange">
             <template>
                 <ol-vector-layer :zIndex="2">
@@ -22,12 +23,14 @@
         </ol-geolocation>
         <ol-vector-layer>
             <ol-source-vector>
-                <ol-feature>
-                    <ol-geom-multi-point :coordinates="coordinates"></ol-geom-multi-point>
+                <ol-feature v-for="(u,i) in users" :key="i">
+                    <ol-geom-multi-point v-if="u.position != undefined" :coordinates="u.position.coordinates"></ol-geom-multi-point>
                     <ol-style>
-                        <ol-style-circle :radius="radius">
+                        <ol-style-circle :radius="radius" @click="userMapClicked">
                             <ol-style-fill :color="fillColor"></ol-style-fill>
-                            <ol-style-stroke :color="strokeColor" :width="strokeWidth"></ol-style-stroke>
+                            <ol-style-stroke :color="u.profile.color" :width="strokeWidth"></ol-style-stroke>
+                            <ol-style-text :text="u.profile.name"></ol-style-text>
+
                         </ol-style-circle>
                     </ol-style>
                 </ol-feature>
@@ -96,20 +99,25 @@ export default {
             // }
             this.position = event.target.getPosition();
             this.$store.commit('core/updateMyPosition', this.position)
+            if (this.centerMe == true) {
+                this.$refs.view.setCenter(this.position);
+            }
 
-            this.$refs.view.setCenter(event.target.getPosition());
             awareness.setLocalStateField('position', {
                 // Define a print name that should be displayed
                 coordinates: this.position,
                 updated: Date.now()
             })
         },
+        userMapClicked(e) {
+            console.log(e)
+        },
         updateUserMarkers() {
             console.log("users in map", this.users)
-            console.log("markers", this.userMarkers)
-            this.coordinates = this.users.map((u) => {
-                return u.position && u.position.coordinates || []
-            })
+            //console.log("markers", this.userMarkers)
+            // this.coordinates = this.users.map((u) => {
+            //     return u.position && u.position.coordinates || []
+            // })
             // this.users.forEach(s => {
             //     let exist = this.$refs.userMarkers.source.getFeatures().find(f => f.get('clientID') == s.profile.clientID)
             //     console.log(exist)
@@ -129,20 +137,38 @@ export default {
             //         exist.getGeometry().setCoordinates(s.position.coordinates)
             //     }
             // })
-            }
-        },
-        watch: {
-            users() {
-                this.updateUserMarkers()
-            }
-        },
-        computed: {
-            users() {
-                return this.$store.state.core.users
-            },
-
         }
+    },
+    watch: {
+        users() {
+            this.updateUserMarkers()
+        },
+        centerMe() {
+            if (this.centerMe == true) {
+                console.log("center me", this.centerMe)
+                // this.$store.commit('core/centerMe', false)
+                this.$refs.view.setCenter(this.position);
+            }
+        },
+        centerUser() {
+            console.log(this.centerUser)
+            this.$refs.view.setCenter(this.centerUser);
+           // this.$refs.view.setZoom(15);
+        }
+    },
+    computed: {
+        users() {
+            return this.$store.state.core.users
+        },
+        centerMe() {
+            return this.$store.state.core.centerMe
+        },
+        centerUser() {
+            return this.$store.state.core.centerUser
+        },
+
     }
+}
 </script>
 
 <style scoped></style>

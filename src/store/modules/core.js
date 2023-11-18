@@ -24,24 +24,31 @@ const state = () => ({
   ],
   profile: Math.floor(Math.random() * 3),
   myPosition: [],
-  users: []
+  users: [],
+  centerMe: true,
+  centerUser: [],
 });
 
 const mutations = {
-
   incrementLevel(state) {
     state.level = state.level + 1;
     console.log(state.level);
   },
-  updateMyPosition(state, p){
-    state.myPosition = p
+  updateMyPosition(state, p) {
+    state.myPosition = p;
   },
-  setUsers(state,u){
-    state.users = u
+  setUsers(state, u) {
+    state.users = u;
   },
-  setProfile(state, id){
-    state.profile = id
-  }
+  setProfile(state, id) {
+    state.profile = id;
+  },
+  centerMe(state, v) {
+    state.centerMe = v;
+  },
+  centerToUser(state, coordinates) {
+    state.centerUser = coordinates;
+  },
 
   // setConfig(state, c) {
   //   state.config = c

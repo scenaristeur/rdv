@@ -2,6 +2,7 @@
     <div>
         <div>
             <BButton @click="showProfile = !showProfile"> Profile</BButton>
+            <BButton @click="followMe"> {{ centerMe == true ? "don't follow me": "follow me" }}</BButton>
             <BModal v-model="showProfile" @ok="updateUser">
 
                 <BFormInput v-model="user.name" placeholder="username"/>
@@ -63,6 +64,10 @@ export default {
                 // Define a print name that should be displayed
                 like: this.profiles[this.profile]
             })
+        },
+        followMe(){
+            console.log(this.centerMe)
+            this.$store.commit('core/centerMe', !this.centerMe)
         }
     },
     watch: {
@@ -79,7 +84,10 @@ export default {
         },
         profile() {
             return this.$store.state.core.profile
-        }
+        },
+        centerMe() {
+            return this.$store.state.core.centerMe
+        },
     }
 }
 </script>
