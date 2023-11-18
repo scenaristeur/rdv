@@ -35,9 +35,12 @@
                 </ol-vector-layer>
             </template>
         </ol-geolocation>
+
+
+
         <ol-vector-layer>
             <ol-source-vector>
-                <ol-feature v-for="(u, i) in users" :key="i">
+                <ol-feature v-for="(u, i) in users" :key="i" >
                     <ol-geom-multi-point v-if="u.position != undefined"
                         :coordinates="u.position.coordinates"></ol-geom-multi-point>
                     <ol-style>

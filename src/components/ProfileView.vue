@@ -29,7 +29,7 @@ profile {{ profile }} -->
                     <div class="row">
                         <label class="col-form-label col-2" for="inline-form-input-profile">Profil</label>
                         <div class="col-8">
-                            <BFormInput id="inline-form-input-profile" v-model="profile_name" placeholder="profile name" />
+                            <BFormInput id="inline-form-input-profile" v-model="profile_name" placeholder="profile name" @keyup.enter="addProfile" />
                         </div>
                         <div class="col-2">
                             <BButton @click="addProfile"> +</BButton>
@@ -60,7 +60,7 @@ profile {{ profile }} -->
                                 <label class="col-form-label col-2" for="inline-form-input-profile">intérêt</label>
                                 <div class="col-8">
                                     <BFormInput v-model="new_interest" :value="new_interest" placeholder="nouvel interêt"
-                                        @change="addInteret({ profil: p.id, })" />
+                                    @keyup.enter="addInteret({ profil: p.id, })" />
                                 </div>
                                 <div class="col-2">
                                     <BButton @click="addInteret({ profil: p.id, })"> +</BButton>
