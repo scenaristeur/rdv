@@ -29,3 +29,7 @@ https://socket.io/fr/docs/v4/middlewares/
 
 ## bootstarp 
 https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/components/form-checkbox.html
+
+
+# deploy
+- https://github.com/sitek94/vite-deploy-demo/tree/main
