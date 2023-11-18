@@ -2,16 +2,15 @@
     <div>
         <div>
             <BButton @click="showProfile = !showProfile"> Profile</BButton>
-            <BModal v-model="showProfile">
+            <BModal v-model="showProfile" @ok="updateUser">
 
-
+                <BFormInput v-model="user.name" placeholder="username"/>
+                <BFormInput v-model="user.color" type="color" />
                 {{ profile }}
 
                 <BListGroup>
-                    <BListGroupItem 
-                    v-for="p in profiles" :key="p.id" href="#" :active="profile == p.id"
-                    @click="changeProfile(p.id)"
-                    >
+                    <BListGroupItem v-for="p in profiles" :key="p.id" href="#" :active="profile == p.id"
+                        @click="changeProfile(p.id)">
                         {{ p.name }}
                     </BListGroupItem>
 
@@ -28,14 +27,33 @@ export default {
     name: "ProfileView",
     data() {
         return {
-            showProfile: false
+            showProfile: false,
+            user: {
+                name: 'user_' + Date.now(),
+                // Define a color that should be associated to the user:
+                color: '#ffb61e', // should be a hex color
+                clientID: awareness.clientID
+            }
         }
     },
     created() {
+        let user = JSON.parse(localStorage.getItem('rdv_user'))
+        // verif todo
+        console.log("localstorage user",user)
+        if(user && user.name && user.color){
+            this.user = user
+        }
+       
+        awareness.setLocalStateField('profile', this.user)
         this.updateInterests()
     },
     methods: {
-        changeProfile(id){
+        updateUser() {
+            console.log("User", this.user)
+            awareness.setLocalStateField('profile', this.user)
+            localStorage.setItem('rdv_user', JSON.stringify(this.user))
+        },
+        changeProfile(id) {
             console.log(id)
             this.$store.commit('core/setProfile', id)
         },

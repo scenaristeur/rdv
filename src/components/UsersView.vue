@@ -12,6 +12,8 @@
                 <br>
                 u.profile.clientID {{ u.profile.clientID }} -->
 
+<div class="user_color" :style="'width:20px;height:20px;background-color:'+u.profile.color"/>
+
                     distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
                     <!-- interests  -->
                     <!-- {{ u.interests }} -->
@@ -46,13 +48,7 @@ export default {
 
     created() {
         // console.log(ystore, awareness),
-        awareness.setLocalStateField('profile', {
-            // Define a print name that should be displayed
-            name: 'user_' + Date.now(),
-            // Define a color that should be associated to the user:
-            color: '#ffb61e', // should be a hex color
-            clientID: awareness.clientID
-        })
+
         observeDeep(ystore.rdvs, this.rdvsUpdate)
         awareness.on('change', () /*changes */ => {
             // console.log("changes", changes)
@@ -137,4 +133,8 @@ export default {
     background-color: black;
     padding: 1px;
 }
+/* .user_color{
+    width: "20px";
+    height: "20px";
+} */
 </style>
