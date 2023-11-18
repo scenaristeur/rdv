@@ -63,6 +63,9 @@
     &nbsp;&nbsp;
     <input type="checkbox" id="follow_me" ref="follow_me" checked v-model="follow_checked" />
     <label for="follow_me">Follow me</label>
+<br>
+    <textarea name="my_interest" id="" cols="30" rows="10"></textarea>
+    
     <!-- <button @click="addMarker">Add Marker</button> -->
     <!-- <BButton @click="modal = !modal"> Toggle modal </BButton> -->
     <BModal v-model="modal" @ok="onAddRdv">
