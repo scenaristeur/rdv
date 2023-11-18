@@ -1,20 +1,26 @@
 <template>
     <div>
-        <h4>Users</h4>
-        {{ myPosition }} {{ awareness.clientID }}
+        <!-- <h4>Users</h4> -->
+        <!-- {{ myPosition }} {{ awareness.clientID }} -->
         <!-- {{  users }} -->
 
-        <BListGroup v-if="users.length > 0">
-
-            <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#">
-                <h2>{{ u.profile.name }}</h2>
-                <!-- u.clientID {{ u.clientID }}
+        <BListGroup v-if="users.length > 0" class="users_list">
+            <div >
+                <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#">
+                    <h2>{{ u.profile.name }}</h2>
+                    <!-- u.clientID {{ u.clientID }}
                 <br>
                 u.profile.clientID {{ u.profile.clientID }} -->
 
-                distance : {{ u.distance  > 1 ? u.distance  + " km" : Math.floor(u.distance * 1000) + " m"}}<br>
-                interests {{ u.interests }}
-            </BListGroupItem>
+                    distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
+                    <!-- interests  -->
+                    <!-- {{ u.interests }} -->
+                    <BBadge v-for="i in  u.interests.like.interests" :key="i"
+                        :variant="profiles[profile].interests.includes(i) ? 'info' : 'light'">{{ i }}</BBadge>
+                    <!-- <BBadge variant="light">Light</BBadge> -->
+                    <!-- {{ profiles[profile].interests }} -->
+                </BListGroupItem>
+            </div>
         </BListGroup>
         <div v-else>
             Recherche des voisins
@@ -83,7 +89,7 @@ export default {
                     // let x =  - u.position.coordinates[0]
                     // let y = this.myPosition[1] - u.position.coordinates[1]
                     const d = this.getDistanceFromLatLonInKm(this.myPosition[0], this.myPosition[1], u.position.coordinates[0], u.position.coordinates[1]).toFixed(3);
-                    temp.distance = d 
+                    temp.distance = d
                 }
 
                 return temp;
@@ -113,9 +119,22 @@ export default {
         myPosition() {
             return this.$store.state.core.myPosition
         },
+        profiles() {
+            return this.$store.state.core.profiles
+        },
+        profile() {
+            return this.$store.state.core.profile
+        },
     }
 
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.users_list {
+    height: 45vh;
+    overflow-y: scroll;
+    background-color: black;
+    padding: 1px;
+}
+</style>

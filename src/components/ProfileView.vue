@@ -8,7 +8,10 @@
                 {{ profile }}
 
                 <BListGroup>
-                    <BListGroupItem v-for="p in profiles" :key="p.id" href="#" :active="profile == p.id">
+                    <BListGroupItem 
+                    v-for="p in profiles" :key="p.id" href="#" :active="profile == p.id"
+                    @click="changeProfile(p.id)"
+                    >
                         {{ p.name }}
                     </BListGroupItem>
 
@@ -28,10 +31,14 @@ export default {
             showProfile: false
         }
     },
-    created(){
-this.updateInterests()
+    created() {
+        this.updateInterests()
     },
     methods: {
+        changeProfile(id){
+            console.log(id)
+            this.$store.commit('core/setProfile', id)
+        },
         updateInterests() {
             console.log("update interests")
             awareness.setLocalStateField('interests', {
@@ -43,7 +50,7 @@ this.updateInterests()
     watch: {
         profiles() {
             this.updateInterests()
-        }, 
+        },
         profile() {
             this.updateInterests()
         }
