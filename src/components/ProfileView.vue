@@ -20,11 +20,32 @@
 </template>
 
 <script>
+import { awareness } from "@/y_store";
 export default {
     name: "ProfileView",
     data() {
         return {
             showProfile: false
+        }
+    },
+    created(){
+this.updateInterests()
+    },
+    methods: {
+        updateInterests() {
+            console.log("update interests")
+            awareness.setLocalStateField('interests', {
+                // Define a print name that should be displayed
+                like: this.profiles[this.profile]
+            })
+        }
+    },
+    watch: {
+        profiles() {
+            this.updateInterests()
+        }, 
+        profile() {
+            this.updateInterests()
         }
     },
     computed: {
