@@ -1,28 +1,12 @@
 // import Vue from 'vue'
 // import idb from '@/api/idb-nodes';
 // import * as Automerge from 'automerge'
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const state = () => ({
   level: 0,
-  profiles: [
-    {
-      id: 0,
-      name: "js +bad",
-      interests: ["js", "badminton", "velo"],
-    },
-    {
-      id: 1,
-      name: "js +tricot",
-      interests: ["js", "tricot", "natation"],
-    },
-    {
-      id: 2,
-      name: "react + tricot",
-      interests: ["react", "tricot", "tracteurs"],
-    },
-  ],
-  profile: Math.floor(Math.random() * 3),
+  profiles: [],
+  profile: null,
   myPosition: [],
   users: [],
   centerMe: true,
@@ -40,6 +24,9 @@ const mutations = {
   setUsers(state, u) {
     state.users = u;
   },
+  setProfiles(state, p) {
+    state.profiles = p;
+  },
   setProfile(state, id) {
     state.profile = id;
   },
@@ -48,6 +35,10 @@ const mutations = {
   },
   centerToUser(state, coordinates) {
     state.centerUser = coordinates;
+  },
+  addProfile(state, p) {
+    p.id = uuidv4();
+    state.profiles.push(p);
   },
 
   // setConfig(state, c) {

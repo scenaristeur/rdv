@@ -8,19 +8,19 @@
             <div>
                 <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#" @click="userClicked(u)">
                     <h2>{{ u.profile.name }}</h2>
-                    <!-- u.clientID {{ u.clientID }}
-                <br>
-                u.profile.clientID {{ u.profile.clientID }} -->
+                    u.clientID {{ u.clientID }}
+                    <br>
+                    u.profile.clientID {{ u.profile.clientID }}
 
                     <div class="user_color" :style="'width:20px;height:20px;background-color:' + u.profile.color" />
 
                     distance : {{ u.distance > 1 ? u.distance + " km" : Math.floor(u.distance * 1000) + " m" }}
-                    <!-- interests  -->
-                    <!-- {{ u.interests }} -->
-                    <BBadge v-for="i in  u.interests.like.interests" :key="i"
-                        :variant="profiles[profile].interests.includes(i) ? 'info' : 'light'">{{ i }}</BBadge>
-                    <!-- <BBadge variant="light">Light</BBadge> -->
-                    <!-- {{ profiles[profile].interests }} -->
+                    {{ u.interests }}
+                    <div v-if="u.interests.like != undefined">
+                        <BBadge v-for="i in  u.interests.like.interests" :key="i"
+                            :variant="profiles[profile].interests.includes(i) ? 'info' : 'light'">{{ i }}</BBadge>
+                    </div>
+
                 </BListGroupItem>
             </div>
         </BListGroup>
@@ -61,10 +61,10 @@ export default {
     methods: {
         userClicked(user) {
             console.log(user)
-            if(user.position != undefined){
-                this.$store.commit('core/centerToUser',user.position.coordinates)
+            if (user.position != undefined) {
+                this.$store.commit('core/centerToUser', user.position.coordinates)
             }
-        
+
         },
         rdvsUpdate(e) {
             console.log("RDVUPDATE", e)
