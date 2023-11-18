@@ -1,94 +1,112 @@
 <template>
-    <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height: 400px" ref="map">
-        <ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" />
+    <div>
+        <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height: 400px" ref="map">
+            <ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" />
 
-        <ol-tile-layer>
-            <ol-source-osm />
-        </ol-tile-layer>
+            <ol-tile-layer>
+                <ol-source-osm />
+            </ol-tile-layer>
 
 
-        <ol-interaction-select @select="featureSelected">
-            <ol-style>
-                <!-- <ol-style-stroke color="green" :width="10"></ol-style-stroke>
+            <ol-interaction-select @select="featureSelected">
+                <ol-style>
+                    <!-- <ol-style-stroke color="green" :width="10"></ol-style-stroke>
         <ol-style-fill color="rgba(255,255,255,0.5)"></ol-style-fill>
         <ol-style-icon :src="hereIcon" :scale="0.05"></ol-style-icon> -->
-                <ol-style-circle :radius="radius * 2">
-                    <ol-style-fill color="green"></ol-style-fill>
-                    <ol-style-stroke color="red" :width="strokeWidth"></ol-style-stroke>
-                    <ol-style-text text="selected"></ol-style-text>
+                    <ol-style-circle :radius="radius * 2">
+                        <ol-style-fill color="green"></ol-style-fill>
+                        <ol-style-stroke color="red" :width="strokeWidth"></ol-style-stroke>
+                        <ol-style-text text="selected"></ol-style-text>
 
-                </ol-style-circle>
-            </ol-style>
-        </ol-interaction-select>
+                    </ol-style-circle>
+                </ol-style>
+            </ol-interaction-select>
 
-        <ol-geolocation :projection="projection" @change:position="geoLocChange">
-            <template>
-                <ol-vector-layer :zIndex="2">
-                    <ol-source-vector>
-                        <ol-feature ref="positionFeature">
-                            <ol-geom-point :coordinates="position"></ol-geom-point>
-                            <ol-style>
-                                <ol-style-icon :src="hereIcon" :scale="0.1"></ol-style-icon>
-                            </ol-style>
-                        </ol-feature>
-                    </ol-source-vector>
-                </ol-vector-layer>
-            </template>
-        </ol-geolocation>
+            <ol-geolocation :projection="projection" @change:position="geoLocChange">
+                <template>
+                    <ol-vector-layer :zIndex="2">
+                        <ol-source-vector>
+                            <ol-feature ref="positionFeature">
+                                <ol-geom-point :coordinates="position"></ol-geom-point>
+                                <ol-style>
+                                    <ol-style-icon :src="hereIcon" :scale="0.1"></ol-style-icon>
+                                </ol-style>
+                            </ol-feature>
+                        </ol-source-vector>
+                    </ol-vector-layer>
+                </template>
+            </ol-geolocation>
 
-        <ol-context-menu-control :items="contextMenuItems" />
+            <ol-context-menu-control :items="contextMenuItems" />
 
-        <ol-vector-layer>
-            <ol-source-vector ref="markers"> 
-            <ol-style>
-              <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
-            </ol-style>
+            <ol-vector-layer>
+                <ol-source-vector ref="markers">
+                    <ol-style>
+                        <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
+                    </ol-style>
 
 
-            <!-- <ol-source-vector ref="markers">
+                    <!-- <ol-source-vector ref="markers">
                 <ol-feature :coordinates="coordinates">
                     <ol-style>
                         <ol-style-icon :src="hereIcon" :scale="0.1"></ol-style-icon>
                     </ol-style>
                 </ol-feature> -->
-            </ol-source-vector>
+                </ol-source-vector>
 
 
 
-          </ol-vector-layer>
+            </ol-vector-layer>
 
-        <ol-vector-layer>
-            <ol-source-vector>
-                <ol-feature v-for="(u, i) in users" :key="i">
-                    <ol-geom-multi-point v-if="u.position != undefined"
-                        :coordinates="u.position.coordinates"></ol-geom-multi-point>
-                    <ol-style>
-                        <ol-style-circle :radius="radius">
-                            <ol-style-fill :color="fillColor"></ol-style-fill>
-                            <ol-style-stroke :color="u.profile.color" :width="strokeWidth"></ol-style-stroke>
-                            <ol-style-text :text="u.profile.name"></ol-style-text>
+            <ol-vector-layer>
+                <ol-source-vector>
+                    <ol-feature v-for="(u, i) in users" :key="i">
+                        <ol-geom-multi-point v-if="u.position != undefined"
+                            :coordinates="u.position.coordinates"></ol-geom-multi-point>
+                        <ol-style>
+                            <ol-style-circle :radius="radius">
+                                <ol-style-fill :color="fillColor"></ol-style-fill>
+                                <ol-style-stroke :color="u.profile.color" :width="strokeWidth"></ol-style-stroke>
+                                <ol-style-text :text="u.profile.name"></ol-style-text>
 
-                        </ol-style-circle>
-                    </ol-style>
-                </ol-feature>
-            </ol-source-vector>
-        </ol-vector-layer>
-    </ol-map>
+                            </ol-style-circle>
+                        </ol-style>
+                    </ol-feature>
+                </ol-source-vector>
+            </ol-vector-layer>
+        </ol-map>
+        <BModal v-model="modal" @ok="onAddRdv">
+
+
+            <BRow class="my-1" v-for="field in inputFields" :key="field.id">
+                <BCol sm="3">
+                    <label :for="`type-${field.name}`"><code>{{ field.name }}</code>:</label>
+                </BCol>
+                <BCol sm="9">
+                    <BFormInput :disabled="!edit" :id="`type-${field.name}`" :type="field.type" v-model="rdv[field.id]"
+                        v-bind:min="field.min" />
+                </BCol>
+            </BRow>
+            <!-- <div class="mt-2">Value: {{ rdv }}</div> -->
+        </BModal>
+    </div>
 </template>
 
 <script>
 // import { inject } from "vue";
 import marker from "@/assets/marker.png";
 import hereIcon from "@/assets/here.png";
-import { awareness } from "@/y_store";
+import pin_drop from "@/assets/pin_drop.png";
+
 // const Feature = inject("ol-feature");
 // const Geom = inject("ol-geom");
 import Feature from "ol/Feature";
 // import  Geometry from "ol/geom/Geometry";
 // console.log("Geometry", Geometry)
 import Point from "ol/geom/Point";
+import { store as ystore, awareness } from "@/y_store";
 
-
+import { v4 as uuidv4 } from "uuid";
 
 
 
@@ -115,25 +133,36 @@ export default {
             strokeColor: "red",
             fillColor: "white",
             coordinates: [],
-              contextMenuItems: null
-            // [
-            //             [116.544921, 40.451633],
-            //             [116.545264, 40.451649],
-            //             [116.545865, 40.451698],
-            //             [116.546144, 40.451551],
-            //             [116.546337, 40.451274],
-            //             [116.546788, 40.451143],
-            //             [116.547324, 40.451078],
-            //             [116.547539, 40.450996],
-            //             [116.547839, 40.450719],
-            //             [116.54844, 40.450506],
-            //             [116.548933, 40.450604],
-            //             [116.549448, 40.450604],
-            //             [116.550242, 40.450376],
-            //             [116.550865, 40.450163],
-            //             [116.551702, 40.449935],
-            //             [116.552581, 40.449576],
-            //         ]
+            contextMenuItems: null,
+            rdv: {},
+            edit: false,
+            modal: false,
+            inputFields: [
+                { id: 'title', name: 'Title', type: 'text' },
+                { id: 'desc', name: 'Description', type: 'text' },
+                { id: 'color', name: 'Color', type: 'color' },
+                { id: 'start_date', name: 'Start Date', type: 'date', min: new Date().toISOString().split('T')[0] },
+                { id: 'start_time', name: 'Start Time', type: 'time' },
+                { id: 'end_date', name: 'End Date', type: 'date', min: new Date().toISOString().split('T')[0] },
+                { id: 'end_time', name: 'End Time', type: 'time' },
+
+
+                // 'number',
+                // 'email',
+                // 'password',
+                // 'search',
+                // 'url',
+                // 'tel',
+                // 'date',
+                // 'time',
+                // 'range',
+                // 'color',
+                // 'datetime',
+                // 'datetime-local',
+                // 'month',
+                // 'week',
+            ]
+
         };
     },
     created() {
@@ -152,6 +181,28 @@ export default {
                     }, // `center` is your callback function
                 },
                 {
+                    text: "Add a rdv",
+                    classname: "some-style-class", // you can add this icon with a CSS class
+                    // instead of `icon` property (see next line)
+                    icon: pin_drop, // this can be relative or absolute
+                    callback: (val) => {
+                        // console.log(val);
+                        app.rdv = {
+                            uuid: uuidv4(),
+                            author: awareness.clientID,
+                            coordinates: val.coordinate,
+                            start_date: new Date().toISOString().split('T')[0],
+                            end_date: new Date().toISOString().split('T')[0],
+                            start_time: "00:00",
+                            end_time: "23:59"
+                        }
+                        // console.log(rdv)
+                        app.edit = true
+                        app.modal = true
+
+                    },
+                },
+                {
                     text: "Add a Marker",
                     classname: "some-style-class", // you can add this icon with a CSS class
                     // instead of `icon` property (see next line)
@@ -161,13 +212,33 @@ export default {
                         const feature = new Feature({
                             geometry: new Point(val.coordinate),
                         });
-                        console.log("new feature",feature)
+                        console.log("new feature", feature)
                         app.$refs.markers.source.addFeature(feature);
                         // console.log(app.markers)
                     },
                 },
                 "-", // this is a separator
             ];
+        },
+        onAddRdv () {
+
+            console.log(this.rdv)
+
+            this.rdv.updated = Date.now()
+
+
+            const feature = new Feature({
+                geometry: new Point(this.rdv.coordinates),
+                data: this.rdv
+            });
+            // console.log("feature1", feature)
+            if (this.edit == true) {
+                this.$refs.markers.source.addFeature(feature);
+                ystore.rdvs[this.rdv.uuid] = this.rdv
+            }
+            // ystore.rdvs[rdv.value.uuid] != undefined ? delete ystore.rdvs[rdv.value.uuid] : ""
+
+
         },
         featureSelected(event) {
             console.log("feature selected", event.selected, event.target)
