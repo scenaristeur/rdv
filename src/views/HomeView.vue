@@ -1,18 +1,27 @@
 <template>
   <div class="home">
 
-    <HelloWorld/>
+    <MapComponent />
+    <ProfileView/>
+    <UsersView/>
+
+  
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import MapComponent from '@/components/MapComponent.vue'
+import ProfileView from '@/components/ProfileView.vue'
+import UsersView from '@/components/UsersView.vue'
 
 export default {
-  name: 'HomeView',
+  name: 'MapView',
   components: {
-    HelloWorld
-  }
+    MapComponent,
+    ProfileView,
+    UsersView
+  },
+
 }
 </script>
