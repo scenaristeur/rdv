@@ -4,7 +4,7 @@
         <!-- {{ myPosition }} {{ awareness.clientID }} -->
         <!-- {{  users }} -->
 
-        <BListGroup v-if="users.length > 0" class="users_list">
+        <BListGroup v-if="users.length > 0" class="scroll_list">
             <div>
                 <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#" @click="userClicked(u)">
                     <h2>{{ u.profile.name }}</h2>
@@ -138,12 +138,6 @@ export default {
 </script>
 
 <style scoped>
-.users_list {
-    height: 45vh;
-    overflow-y: scroll;
-    background-color: black;
-    padding: 1px;
-}
 
 /* .user_color{
     width: "20px";

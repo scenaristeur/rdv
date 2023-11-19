@@ -19,15 +19,15 @@ const state = () => ({
 });
 
 const mutations = {
-  incrementLevel(state) {
-    state.level = state.level + 1;
-    console.log(state.level);
-  },
+  // incrementLevel(state) {
+  //   state.level = state.level + 1;
+  //   console.log(state.level);
+  // },
   updateMyPosition(state, p) {
     console.log("position update", p);
     state.myPosition = p;
-
-    if(Date.now()-state.positionUpdated > 10){
+    console.log("delay ", Date.now()-state.positionUpdated)
+    if(Date.now()-state.positionUpdated > 10000){
       state.positionUpdated = Date.now()
       awareness.setLocalStateField("position", {
         // Define a print name that should be displayed
@@ -68,9 +68,9 @@ const mutations = {
   setRdvs(state, rdvs) {
     state.rdvs = rdvs;
   },
-  increment(state, payload) {
-    state.counter = state.counter + payload;
-  },
+  // increment(state, payload) {
+  //   state.counter = state.counter + payload;
+  // },
   // setConfig(state, c) {
   //   state.config = c
   // }

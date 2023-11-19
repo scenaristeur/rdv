@@ -27,4 +27,11 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.scroll_list {
+  height: 45vh;
+  overflow-y: scroll;
+  background-color: black;
+  padding: 1px;
+}
 </style>

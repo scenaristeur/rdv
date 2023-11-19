@@ -33,3 +33,6 @@ https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/components/form-che
 
 # deploy
 - https://github.com/sitek94/vite-deploy-demo/tree/main
+
+# todo timeline items
+- https://codepen.io/jfg-progi/pen/dazomb
