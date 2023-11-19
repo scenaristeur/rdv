@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkrdv"]=self["webpackChunkrdv"]||[]).push([[443],{2995:function(n,e,r){r.r(e),r.d(e,{default:function(){return i}});var t=r(3396);const u={class:"home"};function c(n,e,r,c,s,o){return(0,t.wg)(),(0,t.iD)("div",u)}var s={name:"AboutView",components:{}},o=r(89);const a=(0,o.Z)(s,[["render",c]]);var i=a}}]);
+//# sourceMappingURL=about.dfe66140.js.map
