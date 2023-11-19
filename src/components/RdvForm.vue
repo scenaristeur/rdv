@@ -3,6 +3,7 @@
         <!-- rdvform {{ rdv }} -->
 
         <BModal v-model="showRdvForm" @ok="onAddRdv" size="lg">
+            <div v-if="edit == false">Rdv non modifiable</div>
             <div v-if="rdv != null">
                 <!--    :style="'backgroundColor:'+rdv.color" -->
                 <label for="datePicker"><code>When ?</code> <small v-if="edit == true"><i>7 days max</i></small></label>
@@ -123,8 +124,12 @@ export default {
     watch: {
         rdv() {
             this.showRdvForm = this.rdv != null
-            if(this.rdv.date != undefined){
-                console.log(this.rdv.date)
+            if(this.rdv.start != undefined){
+               this.date = [this.rdv.start, this.rdv.end]
+                console.log(this.date)
+                this.edit = false
+            }else{
+                this.edit = true
             }
             }
     },
