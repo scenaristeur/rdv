@@ -1,8 +1,7 @@
-// import Vue from 'vue'
-// import idb from '@/api/idb-nodes';
-// import * as Automerge from 'automerge'
+
 import { v4 as uuidv4 } from "uuid";
 import { store as ystore, awareness } from "@/y_store";
+
 
 const state = () => ({
   level: 0,
@@ -15,7 +14,21 @@ const state = () => ({
   rdvs: [],
   rdv: null,
   // counter: 0,
-  positionUpdated : null
+  positionUpdated: null,
+  wikipedia_api_url: "https://fr.wikipedia.org/w/api.php?origin=*",
+  places: [],
+
+
+  wikipedia_params: {
+    //https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gscoord=37.7891838%7C-122.4033522&gsradius=10000&gslimit=100
+    action: "query",
+    list: "geosearch",
+    gscoord: null, // lat + "|" + lon,
+    prop: "coordinates|pageimages",
+    gsradius: 10000,
+    gslimit: 100,
+    format: "json",
+  },
 });
 
 const mutations = {
@@ -23,20 +36,22 @@ const mutations = {
   //   state.level = state.level + 1;
   //   console.log(state.level);
   // },
-  updateMyPosition(state, p) {
+  async updateMyPosition(state, p) {
     console.log("position update", p);
     state.myPosition = p;
-    console.log("delay ", Date.now()-state.positionUpdated)
-    if(Date.now()-state.positionUpdated > 10000){
-      state.positionUpdated = Date.now()
+    console.log("delay ", Date.now() - state.positionUpdated);
+    if (Date.now() - state.positionUpdated > 10000) {
+      state.positionUpdated = Date.now();
       awareness.setLocalStateField("position", {
         // Define a print name that should be displayed
         coordinates: p,
         updated: state.positionUpdated,
       });
+      let places = await this.dispatch("core/getWikipedia", p);
+      console.log(places);
+      state.places = places
     }
- 
-  },
+    },
   setUsers(state, u) {
     state.users = u;
   },
@@ -83,6 +98,29 @@ const actions = {
   updateYstoreRdvs(context, rdv) {
     // context.commit("increment", payload);
     ystore.rdvs[rdv.uuid] = rdv;
+  },
+  async getWikipedia(context, position) {
+    let params = context.state.wikipedia_params;
+    let url = context.state.wikipedia_api_url;
+    params.gscoord = position[1] + "|" + position[0];
+    Object.keys(params).forEach(function (key) {
+      url += "&" + key + "=" + params[key];
+    });
+    
+    console.log("url", url);
+      return fetch(url)
+          .then(function (response) {
+            console.log(response)
+              return response.json();
+          })
+          .then(resp => {
+              console.log(resp);
+              return resp.query.geosearch;
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+
   },
   // async newDoc(context){
   //   let doc = Automerge.init()

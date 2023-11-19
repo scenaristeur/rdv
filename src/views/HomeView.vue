@@ -1,12 +1,14 @@
 <template>
   <div class="home">
     <!-- <MapComponent /> -->
-    <WorldMap :value="view" :users="users" :rdvs="rdvs"/>
-<!-- <TimelineView /> -->
+    <WorldMap :value="view" :users="users" :rdvs="rdvs" :places="places" />
+    <!-- <TimelineView /> -->
     <ProfileView />
+    <WikipediaView v-if="view == 'wikipedia'" />
     <UsersView v-if="view == 'users'" />
     <RdvView v-if="view == 'rdv'" />
     <RdvUpdater />
+    <UsersUpdater />
 
   </div>
 </template>
@@ -20,6 +22,8 @@ import ProfileView from '@/components/ProfileView.vue'
 import UsersView from '@/components/UsersView.vue'
 import RdvView from '@/components/RdvView.vue'
 import RdvUpdater from '@/components/RdvUpdater.vue'
+import UsersUpdater from '@/components/UsersUpdater.vue'
+import WikipediaView from '@/views/WikipediaView.vue'
 
 export default {
   name: 'MapView',
@@ -29,8 +33,11 @@ export default {
     WorldMap,
     ProfileView,
     UsersView,
-    RdvView, RdvUpdater,
-    // TimelineView
+    RdvView,
+    RdvUpdater,
+    UsersUpdater,
+    // TimelineView,
+    WikipediaView
   },
   computed: {
     view() {
@@ -41,6 +48,9 @@ export default {
     },
     rdvs() {
       return this.$store.state.core.rdvs
+    },
+    places() {
+      return this.$store.state.core.places
     },
   }
 

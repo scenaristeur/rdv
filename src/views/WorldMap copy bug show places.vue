@@ -1,5 +1,4 @@
 <template>
-
   <b-button-group size="sm" class="map-toolbar">
     <BButton @click="followMe = !followMe" :variant="followMe == true ? 'warning' : 'success'"> {{
       followMe ==
@@ -104,11 +103,11 @@
         </ol-feature>
       </ol-source-vector>
     </ol-vector-layer> -->
-<!-- {{ placeMarkers.value }} -->
-
+    <!-- {{ placeMarkers.value }} -->
+    {{ showWikipedia }}
   </ol-map>
   <RdvForm />
- 
+  {{  places }}
 </template>
 
 <script setup>
@@ -162,7 +161,6 @@ const prop = defineProps({
   //value: { default: '', type: [String, Number] },
   users: { type: [Array] },
   rdvs: { type: [Array] },
-  places: { type: [Array] },
 })
 const contextMenuItems = ref([]);
 
@@ -191,23 +189,40 @@ watch(
   }
 )
 
+const places = computed(() => {
+  // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  return store.state.core.places;
+});
+
+const updatePlaces = () => {
+  console.log('prop places changed', places)
+   if (showWikipedia.value == true) {
+  for (let place of Object.values(places)) {
+    console.log("-----", place,)
+    const feature = new Feature({
+      geometry: new Geom.Point([place.lon, place.lat]),
+      name: place.title, //+ rdv.start_date + rdv.end_date,
+      // uuid: rdv.uuid,
+      // data: rdv
+    });
+    placeMarkers.value.source.addFeature(feature);
+  }
+  }
+  else{
+    placeMarkers.value.source.clear()
+  }
+}
+
 watch(
-  () => prop.places,
+  () => places,
   () => {
-    console.log('prop places changed', prop.places)
-    for (let place of Object.values(prop.places)) {
-      console.log("-----", place, )
-      const feature = new Feature({
-        geometry: new Geom.Point([place.lon,place.lat]),
-         name: place.title, //+ rdv.start_date + rdv.end_date,
-        // uuid: rdv.uuid,
-        // data: rdv
-      });
-      placeMarkers.value.source.addFeature(feature);
-    }
+    updatePlaces()
+
 
   }
 )
+
+
 
 const geoLocChange = (event) => {
   position.value = event.target.getPosition();
@@ -219,12 +234,24 @@ const geoLocChange = (event) => {
 };
 
 const centerPoint = computed(() => {
- // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
   return store.state.core.centerPoint;
 });
-watch(centerPoint,(centerPoint)=>{
+watch(centerPoint, (centerPoint) => {
   view.value?.setCenter(centerPoint);
 })
+
+const showWikipedia = computed(() => {
+  // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  return store.state.core.showWikipedia;
+});
+
+watch(showWikipedia, (showWikipedia) => {
+  console.log(showWikipedia);
+  updatePlaces()
+})
+
+
 
 
 const selectConditions = inject("ol-selectconditions");
@@ -286,8 +313,8 @@ contextMenuItems.value = [
 
 </script>
 <style scoped>
-.map-toolbar{
-  position: absolute  !important;
+.map-toolbar {
+  position: absolute !important;
   top: 0px;
   left: 33px;
   z-index: 2;

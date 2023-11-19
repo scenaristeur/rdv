@@ -13,6 +13,7 @@ profile {{ profile }} -->
         <b-button-group>
             <b-button @click="setView('users')">Users</b-button>
             <b-button @click="setView('rdv')">Rdv</b-button>
+            <b-button @click="setView('wikipedia')">Wikipedia</b-button>
             <b-button disabled>Calendar</b-button>
 
         </b-button-group>

@@ -4,7 +4,7 @@
         <!-- {{ myPosition }} {{ awareness.clientID }} -->
         <!-- {{  users }} -->
 
-        <BListGroup v-if="users.length > 0" class="scroll_list">
+        <BListGroup class="scroll_list">
             <div>
                 <BListGroupItem v-for="u in users" :key="u.profile.clientID" href="#" @click="userClicked(u)">
                     <h2>{{ u.profile.name }}</h2>
@@ -40,43 +40,19 @@
                 </BListGroupItem>
             </div>
         </BListGroup>
-        <div v-else>
-            Recherche des voisins
-        </div>
+   
     </div>
 </template>
 
 <script>
 
-import { awareness } from "@/y_store";
+
 
 
 
 export default {
     name: "UsersView",
-    data() {
-        return {
-            users: [],
-            awareness: awareness,
-            updating: null
-        }
-    },
-
-    created() {
-        // console.log(ystore, awareness),
-
-
-        awareness.on('change', (changes) => {
-            console.log("--changes", changes)
-            // Whenever somebody updates their awareness information,
-            // we log all awareness information from all users.
-            // console.log(Array.from(awareness.getStates().values()))
-            this.updateUsers(Array.from(awareness.getStates().values()).filter((u) => u.profile != undefined && u.profile.clientID != awareness.clientID))
-
-        })
-        //this.updateUsers(Array.from(awareness.getStates().values()).filter((u) => u.profile != undefined && u.profile.clientID != awareness.clientID))
-    },
-    methods: {
+     methods: {
         userClicked(user) {
             console.log(user)
             if (user.position != undefined) {
@@ -85,63 +61,23 @@ export default {
 
         },
 
-        updateUsers(users) {
-
-            if (this.updating == null || Date.now() - this.updating > 10000) {
-                console.log('UPDATE USERS'/*, users,Date.now(), this.updating,  Date.now() - this.updating*/ )
-                this.users = this.withDistances(users).sort(function (a, b) {
-                    return a.distance - b.distance;
-                });
-                this.$store.commit('core/setUsers', this.users)
-                this.updating = Date.now()
-            }
-            // else{
-            //     console.log("updated less than 10 s")
-            // }
-
-
-            // users.forEach(user => {
-            //     try{
-            //         console.log(user.profile.name, user.position)
-            //     }catch(e){
-            //         console.log(e)
-            //     }
-
-            // }); 
-        },
-        withDistances(users) {
-
-            let usersD = users.map((u) => {
-                var temp = Object.assign({}, u);
-                if (u.position != undefined && this.myPosition != undefined) {
-                    // let x =  - u.position.coordinates[0]
-                    // let y = this.myPosition[1] - u.position.coordinates[1]
-                    const d = this.$getDistanceFromLatLonInKm(this.myPosition[0], this.myPosition[1], u.position.coordinates[0], u.position.coordinates[1]).toFixed(3);
-                    temp.distance = d
-                }
-
-                return temp;
-            });
-            return usersD
-        },
-
-
-
         getInterestVariant(i) {
             let p = this.profiles.find((p) => p.id == this.profile)
             return p != undefined && p.interests.includes(i) ? 'info' : 'light'
-
         }
     },
     computed: {
-        myPosition() {
-            return this.$store.state.core.myPosition
-        },
+        // myPosition() {
+        //     return this.$store.state.core.myPosition
+        // },
         profiles() {
             return this.$store.state.core.profiles
         },
         profile() {
             return this.$store.state.core.profile
+        },
+        users() {
+            return this.$store.state.core.users
         },
     }
 

@@ -36,3 +36,7 @@ https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/components/form-che
 
 # todo timeline items
 - https://codepen.io/jfg-progi/pen/dazomb
+
+# free png marker
+- https://www.flaticon.com/free-icons/marker
+- free icon https://www.flaticon.com/free-icon/pin_5537198?term=marker&page=1&position=17&origin=tag&related_id=5537198
