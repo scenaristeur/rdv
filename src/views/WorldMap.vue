@@ -1,7 +1,7 @@
 <template>
 
-  <b-button-group size="sm">
-    <BButton @click="followMe = !followMe" :variant="followMe == true ? 'outline-warning' : 'outline-success'"> {{
+  <b-button-group size="sm" class="map-toolbar">
+    <BButton @click="followMe = !followMe" :variant="followMe == true ? 'warning' : 'success'"> {{
       followMe ==
       true ? "don't follow me" : "follow me" }}</BButton>
   </b-button-group>
@@ -176,19 +176,12 @@ watch(
   }
 )
 
-
-
-
 const geoLocChange = (event) => {
-  console.log("AAAAA", event);
   position.value = event.target.getPosition();
-  view.value?.setCenter(event.target?.getPosition());
   store.commit('core/updateMyPosition', position.value)
   if (followMe.value == true) {
     view.value?.setCenter(event.target?.getPosition());
   }
-  console.log('++++++++++++++++++++zoom & pos', view.value.getCenter(), view.value.getZoom())
-
   localStorage.setItem('rdv_map_view', JSON.stringify({ center: view.value.getCenter(), zoom: view.value.getZoom() }))
 };
 
@@ -259,3 +252,11 @@ contextMenuItems.value = [
 ];
 
 </script>
+<style scoped>
+.map-toolbar{
+  position: absolute  !important;
+  top: 0px;
+  right: 0px;
+  z-index: 2;
+}
+</style>

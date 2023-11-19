@@ -20,12 +20,9 @@ export default {
         rdvsUpdate() {
             let rdvs = []
             for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
-             
-                console.log(uuid, rdv.start, rdv.end, rdv.title, rdv.color, rdv.description, rdv)
-                console.log(Date.parse(rdv.end))
+
                 let end = Date.parse(rdv.end)
                 let now = Date.now()
-                console.log(now, end, end<now)
                 if (end < now){
                     console.log("DELETE old rdv", uuid)
                     delete ystore.rdvs[uuid]
