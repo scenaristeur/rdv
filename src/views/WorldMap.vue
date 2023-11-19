@@ -117,7 +117,9 @@ const Feature = inject("ol-feature");
 const Geom = inject("ol-geom");
 import RdvForm from '@/components/RdvForm.vue'
 
-const center = ref([1.39, 43.58]);
+//const center = ref([1.39, 43.58]);
+
+const center = ref([2.58, 45]);
 const projection = ref("EPSG:4326");
 const zoom = ref(15);
 const rotation = ref(0);
@@ -134,6 +136,16 @@ const position = ref([]);
 const followMe = ref(true)
 
 const rdvMarkers = ref([]);
+
+try {
+  const localStorageMapView = localStorage.getItem('rdv_map_view')
+  let mapview_conf = JSON.parse(localStorageMapView)
+  zoom.value = mapview_conf.zoom
+  center.value = mapview_conf.center
+} catch (e) {
+  console.log(e)
+}
+
 
 
 const prop = defineProps({
@@ -192,6 +204,9 @@ const geoLocChange = (event) => {
   if (followMe.value == true) {
     view.value?.setCenter(event.target?.getPosition());
   }
+  console.log('++++++++++++++++++++zoom & pos', view.value.getCenter(), view.value.getZoom())
+
+  localStorage.setItem('rdv_map_view', JSON.stringify({ center: view.value.getCenter(), zoom: view.value.getZoom() }))
 };
 
 
