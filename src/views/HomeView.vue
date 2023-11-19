@@ -2,7 +2,7 @@
   <div class="home">
     <!-- <MapComponent /> -->
     <WorldMap :value="view" :users="users" :rdvs="rdvs"/>
-
+<!-- <TimelineView /> -->
     <ProfileView />
     <UsersView v-if="view == 'users'" />
     <RdvView v-if="view == 'rdv'" />
@@ -14,6 +14,7 @@
 <script>
 // @ is an alias to /src
 import WorldMap from '@/views/WorldMap.vue'
+// import TimelineView from '@/views/TimelineView.vue'
 // import MapComponent from '@/components/MapComponent.vue'
 import ProfileView from '@/components/ProfileView.vue'
 import UsersView from '@/components/UsersView.vue'
@@ -28,7 +29,8 @@ export default {
     WorldMap,
     ProfileView,
     UsersView,
-    RdvView, RdvUpdater
+    RdvView, RdvUpdater,
+    // TimelineView
   },
   computed: {
     view() {
