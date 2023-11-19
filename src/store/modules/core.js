@@ -2,6 +2,7 @@
 // import idb from '@/api/idb-nodes';
 // import * as Automerge from 'automerge'
 import { v4 as uuidv4 } from "uuid";
+import { awareness } from "@/y_store";
 
 const state = () => ({
   level: 0,
@@ -12,7 +13,8 @@ const state = () => ({
   centerMe: true,
   centerPoint: [],
   view: "users",
-  rdvs: []
+  rdvs: [],
+  counter: 0
 });
 
 const mutations = {
@@ -21,7 +23,13 @@ const mutations = {
     console.log(state.level);
   },
   updateMyPosition(state, p) {
+    console.log("position update",p)
     state.myPosition = p;
+    awareness.setLocalStateField('position', {
+      // Define a print name that should be displayed
+      coordinates: p,
+      updated: Date.now()
+  })
   },
   setUsers(state, u) {
     state.users = u;
@@ -48,12 +56,18 @@ const mutations = {
   setRdvs(state, rdvs) {
     state.rdvs = rdvs;
   },
+  increment(state, payload) {
+    state.counter = state.counter + payload
+  }
   // setConfig(state, c) {
   //   state.config = c
   // }
 };
 
 const actions = {
+  increment(context, payload) {
+    context.commit('increment', payload);
+  }
   // async newDoc(context){
   //   let doc = Automerge.init()
   //   context.commit('setDoc', doc)

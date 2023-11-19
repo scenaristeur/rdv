@@ -1,7 +1,8 @@
 <template>
   AVANT
- val <div>{{ value }}</div>
+ val <div>{{ value }}</div> <p>Counter: {{ trackCounter }}</p>
   <br>
+  <button @click="incrementCounter">Increment</button>
   users {{ users }}<br>rdvs {{ rdvs }}
   <input type="text" name="Test Value" id v-model="text" />
 
@@ -12,6 +13,41 @@
     <ol-tile-layer>
       <ol-source-osm />
     </ol-tile-layer>
+    <ol-context-menu-control :items="contextMenuItems" />
+
+
+    <ol-geolocation :projection="projection" @change:position="geoLocChange">
+      <template>
+          <ol-vector-layer :zIndex="2">
+              <ol-source-vector>
+                  <ol-feature ref="positionFeature">
+                      <ol-geom-point :coordinates="position"></ol-geom-point>
+                      <ol-style>
+                          <ol-style-icon :src="hereIcon" :scale="0.1"></ol-style-icon>
+                      </ol-style>
+                  </ol-feature>
+              </ol-source-vector>
+          </ol-vector-layer>
+      </template>
+  </ol-geolocation>
+
+                <!-- users -->
+                <ol-vector-layer>
+                  <ol-source-vector>
+                      <ol-feature v-for="(u, i) in users" :key="i">
+                          <ol-geom-multi-point v-if="u.position != undefined"
+                              :coordinates="u.position.coordinates"></ol-geom-multi-point>
+                          <ol-style>
+                              <ol-style-circle :radius="radius">
+                                  <ol-style-fill :color="fillColor"></ol-style-fill>
+                                  <ol-style-stroke :color="u.profile.color" :width="strokeWidth"></ol-style-stroke>
+                                  <ol-style-text :text="u.profile.name"></ol-style-text>
+  
+                              </ol-style-circle>
+                          </ol-style>
+                      </ol-feature>
+                  </ol-source-vector>
+              </ol-vector-layer>
 
                <!-- RDVS-->
 
@@ -44,14 +80,24 @@
 // import { /*defineComponent,*/ ref, computed } from "@vue/composition-api";
 
 import { ref, computed, defineProps, watch } from "vue";
+import { useStore } from 'vuex'
+import marker from "@/assets/marker.png";
+import hereIcon from "@/assets/here.png";
 
 const center = ref([1.39, 43.58]);
 const projection = ref("EPSG:4326");
-const zoom = ref(8);
+const zoom = ref(15);
 const rotation = ref(0);
-import marker from "@/assets/marker.png";
 
-const strokeWidth = ref(10);
+const fillColor = ref("white");
+const strokeWidth = ref(1);
+const radius = ref(10);
+
+const store = useStore()
+
+const view = ref();
+
+const position = ref([]);
 
 const prop = defineProps({
   value: { default: '', type: [String, Number] },
@@ -81,11 +127,53 @@ watch(
   }
 )
 
+
+
+const incrementCounter = () => {
+      // replace 'this.$store' with
+      // the new 'store' reference
+      store.dispatch('core/increment', 1)
+    }
+
+const geoLocChange = (event) => {
+  console.log("AAAAA", event);
+  position.value = event.target.getPosition();
+  view.value?.setCenter(event.target?.getPosition());
+  store.commit('core/updateMyPosition', position.value)
+};
+
+
+// geoLocChange(event) {
+//             // if(this.initialisation == true){
+//             //     this.zoom = 15
+//             //     this.initialisation = false
+//             // }
+//             this.position = event.target.getPosition();
+//             this.$store.commit('core/updateMyPosition', this.position)
+//             if (this.centerMe == true) {
+//                 this.$refs.view.setCenter(this.position);
+//             }
+
+//             awareness.setLocalStateField('position', {
+//                 // Define a print name that should be displayed
+//                 coordinates: this.position,
+//                 updated: Date.now()
+//             })
+//         },
+
 const text = ref("test");
 
 const label = computed(() => {
   return text.value;
 });
+
+const trackCounter = computed(() => {
+  return store.state.core.counter;
+});
+// computed: {
+//     trackCounter() {
+//       return this.$store.getters.getCounter
+//     }
 
 
 
