@@ -1,9 +1,5 @@
 <template>
-  AVANT
-  <!-- val <div>{{ value }}</div>  -->
-  <p>Counter: {{ trackCounter }}</p> {{ followMe }}
-  <br>
-  <button @click="incrementCounter">Increment</button>
+
   <b-button-group size="sm">
     <BButton @click="followMe = !followMe" :variant="followMe == true ? 'outline-warning' : 'outline-success'"> {{
       followMe ==
@@ -100,13 +96,13 @@
 
   </ol-map>
   <RdvForm />
-  APRES
+ 
 </template>
 
 <script setup>
 // import { /*defineComponent,*/ ref, computed } from "@vue/composition-api";
 
-import { ref, computed, defineProps, watch, inject } from "vue";
+import { ref, /*computed,*/ defineProps, watch, inject } from "vue";
 import { useStore } from 'vuex'
 import marker from "@/assets/marker.png";
 import marker_selected from "@/assets/marker_selected.png";
@@ -155,14 +151,6 @@ const prop = defineProps({
 })
 const contextMenuItems = ref([]);
 
-
-watch(
-  () => prop.value,
-  () => {
-    console.log('prop value changed', prop.value)
-  }
-)
-
 watch(
   () => prop.users,
   () => {
@@ -189,13 +177,6 @@ watch(
 )
 
 
-
-const incrementCounter = () => {
-  // replace 'this.$store' with
-  // the new 'store' reference
-  store.dispatch('core/increment', 1)
-}
-
 const geoLocChange = (event) => {
   console.log("AAAAA", event);
   position.value = event.target.getPosition();
@@ -209,45 +190,9 @@ const geoLocChange = (event) => {
   localStorage.setItem('rdv_map_view', JSON.stringify({ center: view.value.getCenter(), zoom: view.value.getZoom() }))
 };
 
-
-// geoLocChange(event) {
-//             // if(this.initialisation == true){
-//             //     this.zoom = 15
-//             //     this.initialisation = false
-//             // }
-//             this.position = event.target.getPosition();
-//             this.$store.commit('core/updateMyPosition', this.position)
-//             if (this.centerMe == true) {
-//                 this.$refs.view.setCenter(this.position);
-//             }
-
-//             awareness.setLocalStateField('position', {
-//                 // Define a print name that should be displayed
-//                 coordinates: this.position,
-//                 updated: Date.now()
-//             })
-//         },
-
-// const text = ref("test");
-
-// const label = computed(() => {
-//   return text.value;
+// const trackCounter = computed(() => {
+//   return store.state.core.counter;
 // });
-
-const trackCounter = computed(() => {
-  return store.state.core.counter;
-});
-// computed: {
-//     trackCounter() {
-//       return this.$store.getters.getCounter
-//     }
-
-
-
-// return {
-//   text,
-//   label
-// };
 
 
 const selectConditions = inject("ol-selectconditions");
@@ -265,7 +210,7 @@ const featureSelected = (event) => {
     let name = selected.get("name")
     let data = selected.get("data")
     console.log(name, data, data.description, data.color)
-
+    store.commit('core/setRdv', data)
   }
 };
 
@@ -292,10 +237,6 @@ contextMenuItems.value = [
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
       view.value.setCenter(val.coordinate);
-      // view.value.zoom = 17
-      // zoom.value = 17
-      // map.value.changed()
-      // view.value.setZoom(17)
     }, // `center` is your callback function
   },
   {
@@ -306,20 +247,6 @@ contextMenuItems.value = [
     callback: (val) => {
       console.log(val)
       store.commit('core/setRdv', { coordinates: val.coordinate })
-      // rdv.value = {
-      //   uuid: uuidv4(),
-      //   author: awareness.clientID,
-      //   coordinates: val.coordinate,
-      // }
-      // if (date.value != undefined) {
-      //   date.value[0] = new Date()
-      //   date.value[1] = new Date()
-      // }
-
-      // // console.log(rdv)
-      // edit.value = true
-      // modal.value = true
-
     },
   },
   "-", // this is a separator

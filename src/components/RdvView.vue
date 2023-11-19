@@ -5,8 +5,11 @@
         <BListGroup>
             <BListGroupItem v-for="rdv in rdvs" :key="rdv.uuid" button @click="rdvSelected(rdv)">
                 <h4>{{ rdv.title }}</h4>
-                <small>{{ localeDateTime(rdv.start_date, rdv.start_time) }} -> {{ localeDateTime(rdv.end_date, rdv.end_time)
-                }}</small>
+                <!-- <small>{{ localeDateTime(rdv.start_date, rdv.start_time) }} -> {{ localeDateTime(rdv.end_date, rdv.end_time)
+                }}</small> -->
+                <small>{{ rdv.start_date}} {{  rdv.start_time }} -> {{ rdv.end_date}} {{  rdv.end_time }}
+                </small>
+                <!-- {{  rdv }} -->
                 <br> {{ rdv.description }}
                 <span v-if="rdv.distance != undefined"><br>{{ rdv.distance > 1 ? rdv.distance + " km" :
                     Math.floor(rdv.distance * 1000) + " m" }}</span>

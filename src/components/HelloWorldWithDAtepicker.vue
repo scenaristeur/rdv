@@ -12,13 +12,11 @@
 
       <ol-vector-layer>
         <ol-source-vector ref="markers"> </ol-source-vector>
-
         <ol-style :overrideStyleFunction="overrideStyleFunction">
           <ol-style-fill :color="fillColor"></ol-style-fill>
           <ol-style-icon :src="marker" :scale="0.05"></ol-style-icon>
           <ol-style-text text="Hellooooo"></ol-style-text>
         </ol-style>
-
       </ol-vector-layer>
 
       <ol-interaction-select @select="featureSelected" :condition="selectCondition" :features="selectedFeatures">

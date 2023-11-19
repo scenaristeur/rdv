@@ -1,12 +1,12 @@
 <template>
-    <div>
+
         <!-- coord {{ coordinates }}, -->
         
         <button v-if="adresseShow == false" @click.stop="showAdresse">adresse</button>
         <div v-else>{{ adresse }} <button  @click.stop="adresseShow = false">cacher</button>
 
         </div>
-    </div>
+   
 </template>
 
 <script>

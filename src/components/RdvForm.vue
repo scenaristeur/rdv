@@ -85,6 +85,7 @@ export default {
             console.log(this.date)
             // console.log(date)
             if (this.date[1] == null) { this.date[1] = this.date[0] }
+            this.rdv.date = this.date
             this.rdv.start_date = this.date[0].toLocaleDateString()
             this.rdv.start_time = this.date[0].toLocaleTimeString()
             this.rdv.end_date = this.date[1].toLocaleDateString()
@@ -121,6 +122,9 @@ export default {
     watch: {
         rdv() {
             this.showRdvForm = this.rdv != null
+            if(this.rdv.date != undefined){
+                console.log(this.rdv.date)
+            }
             }
     },
     computed: {
