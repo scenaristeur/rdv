@@ -170,7 +170,6 @@ export default {
             }
         },
         setView(v) {
-            console.log('add rdv')
             this.$store.commit('core/setView', v)
         },
         updateUser() {

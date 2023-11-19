@@ -23,22 +23,14 @@ export default {
 
                 let end = Date.parse(rdv.end)
                 let now = Date.now()
+                console.log(rdv.title, rdv.end, end, now, end-now)
                 if (end < now){
                     console.log("DELETE old rdv", uuid)
                     delete ystore.rdvs[uuid]
                         return
                 }
                 rdvs.push(rdv)
-                // console.log(rdv.date[0], rdv.date[1], typeof rdv.date[0], typeof rdv.date[1])
-                // console.log( new Date(rdv.date[0], new Date(rdv.date[1])))
-                
-                //   let theRdv = ystore.rdvs[uuid]
-                //   console.log('theRDV',theRdv)
-                //     console.log("-----------dates", uuid, rdv)
-                  
-             
-
-            }
+             }
             this.$store.commit('core/setRdvs', rdvs)
         },
         rdvsUpdate1() {

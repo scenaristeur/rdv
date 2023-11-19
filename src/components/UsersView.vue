@@ -48,7 +48,7 @@
 
 <script>
 
-import {  awareness } from "@/y_store";
+import { awareness } from "@/y_store";
 
 
 
@@ -57,22 +57,24 @@ export default {
     data() {
         return {
             users: [],
-            awareness: awareness
+            awareness: awareness,
+            updating: null
         }
     },
 
     created() {
         // console.log(ystore, awareness),
 
-      
-        awareness.on('change', () /*changes */ => {
-            // console.log("changes", changes)
+
+        awareness.on('change', (changes) => {
+            console.log("--changes", changes)
             // Whenever somebody updates their awareness information,
             // we log all awareness information from all users.
             // console.log(Array.from(awareness.getStates().values()))
             this.updateUsers(Array.from(awareness.getStates().values()).filter((u) => u.profile != undefined && u.profile.clientID != awareness.clientID))
 
         })
+        //this.updateUsers(Array.from(awareness.getStates().values()).filter((u) => u.profile != undefined && u.profile.clientID != awareness.clientID))
     },
     methods: {
         userClicked(user) {
@@ -84,11 +86,20 @@ export default {
         },
 
         updateUsers(users) {
-            console.log('UPDATE USERS', users)
-            this.users = this.withDistances(users).sort(function (a, b) {
-                return a.distance - b.distance;
-            });
-            this.$store.commit('core/setUsers', this.users)
+
+            if (this.updating == null || Date.now() - this.updating > 10000) {
+                console.log('UPDATE USERS'/*, users,Date.now(), this.updating,  Date.now() - this.updating*/ )
+                this.users = this.withDistances(users).sort(function (a, b) {
+                    return a.distance - b.distance;
+                });
+                this.$store.commit('core/setUsers', this.users)
+                this.updating = Date.now()
+            }
+            // else{
+            //     console.log("updated less than 10 s")
+            // }
+
+
             // users.forEach(user => {
             //     try{
             //         console.log(user.profile.name, user.position)
@@ -102,7 +113,7 @@ export default {
 
             let usersD = users.map((u) => {
                 var temp = Object.assign({}, u);
-                if (u.position != undefined && this.myPosition!= undefined) {
+                if (u.position != undefined && this.myPosition != undefined) {
                     // let x =  - u.position.coordinates[0]
                     // let y = this.myPosition[1] - u.position.coordinates[1]
                     const d = this.$getDistanceFromLatLonInKm(this.myPosition[0], this.myPosition[1], u.position.coordinates[0], u.position.coordinates[1]).toFixed(3);
@@ -138,7 +149,6 @@ export default {
 </script>
 
 <style scoped>
-
 /* .user_color{
     width: "20px";
     height: "20px";
