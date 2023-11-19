@@ -4,6 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import {store as ystore} from './y_store'
 import store from './store'
+import ToolsPlugin from "@/plugins/tools-plugin";
 
 import BootstrapVue3 from "bootstrap-vue-3";
 
@@ -28,5 +29,6 @@ createApp(App)
 .use(router)
 .use(BootstrapVue3)
 .use(ystore)
+.use(ToolsPlugin,{store})
 .use(OpenLayersMap /* options */)
 .mount('#app')

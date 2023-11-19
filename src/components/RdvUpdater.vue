@@ -21,14 +21,17 @@ export default {
             let rdvs = []
             for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
                 if (uuid != awareness.clientID) {
+                  
                     console.log("coordin", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
                     console.log("dates", uuid, rdv.end_date, rdv.end_time/*rdv.toJSON(),*/ /*rdv.ownKeys()*/)
-                    let iso8601 = rdv.end_date + "T" + rdv.end_time + ":00Z"
+                    let iso8601 = rdv.end_date + "T" + rdv.end_time //+ ":00Z"
+                    console.log("iso", iso8601)
                     let date = new Date(iso8601)
                     let now = Date.now()
                     console.log(now, date)
                     let diff = date.getTime() - now
                     if (diff < 0) {
+                        console.log("diff delete", diff)
                         delete ystore.rdvs[uuid]
                         return
                     }

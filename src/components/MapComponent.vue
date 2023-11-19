@@ -309,10 +309,12 @@ this.stateTitle= this.edit != true || (this.rdv.title.length > 2 && this.rdv.tit
 
             console.log(this.date)
   if (this.date[1] == null){this.date[1] = this.date[0]}
-  this.rdv.start_date = this.date[0].toLocaleDateString()
-  this.rdv.start_time = this.date[0].toLocaleTimeString()
-  this.rdv.end_date = this.date[1].toLocaleDateString()
-  this.rdv.end_time = this.date[1].toLocaleTimeString()
+  let d0 = this.date[0].toISOString().split('T')
+  let d1 = this.date[1].toISOString().split('T')
+  this.rdv.start_date = d0[0]//.toLocaleDateString()
+  this.rdv.start_time = d0[1]//.toLocaleTimeString()
+  this.rdv.end_date = d1[0]//.toLocaleDateString()
+  this.rdv.end_time = d1[1]//.toLocaleTimeString()
   this.rdv.password = Base64.stringify(sha256(this.password));
   this.password = ""
             console.log(this.rdv)
