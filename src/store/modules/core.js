@@ -14,7 +14,8 @@ const state = () => ({
   view: "users",
   rdvs: [],
   rdv: null,
-  counter: 0,
+  // counter: 0,
+  positionUpdated : null
 });
 
 const mutations = {
@@ -25,11 +26,16 @@ const mutations = {
   updateMyPosition(state, p) {
     console.log("position update", p);
     state.myPosition = p;
-    awareness.setLocalStateField("position", {
-      // Define a print name that should be displayed
-      coordinates: p,
-      updated: Date.now(),
-    });
+
+    if(Date.now()-state.positionUpdated > 10){
+      state.positionUpdated = Date.now()
+      awareness.setLocalStateField("position", {
+        // Define a print name that should be displayed
+        coordinates: p,
+        updated: state.positionUpdated,
+      });
+    }
+ 
   },
   setUsers(state, u) {
     state.users = u;
