@@ -7,8 +7,6 @@ profile {{ profile }} -->
 
         <b-button-group>
             <BButton @click="showProfile = !showProfile" variant="info"> Profil</BButton>
-            <BButton @click="followMe" :variant="centerMe == true ? 'outline-warning' : 'outline-success'"> {{ centerMe ==
-                true ? "don't follow me" : "follow me" }}</BButton>
             <!-- <BButton @click="addRdv" variant="success"> rdv</BButton> -->
 
         </b-button-group>&nbsp;&nbsp;&nbsp;
@@ -192,10 +190,7 @@ export default {
             })
             localStorage.setItem('rdv_user_interests', JSON.stringify({ profiles: this.profiles, profile: this.profile }))
         },
-        followMe() {
-            console.log(this.centerMe)
-            this.$store.commit('core/centerMe', !this.centerMe)
-        }
+ 
     },
     watch: {
         profiles() {
@@ -211,9 +206,6 @@ export default {
         },
         profile() {
             return this.$store.state.core.profile
-        },
-        centerMe() {
-            return this.$store.state.core.centerMe
         },
     }
 }

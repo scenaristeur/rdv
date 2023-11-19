@@ -2,7 +2,7 @@
 // import idb from '@/api/idb-nodes';
 // import * as Automerge from 'automerge'
 import { v4 as uuidv4 } from "uuid";
-import { awareness } from "@/y_store";
+import { store as ystore, awareness } from "@/y_store";
 
 const state = () => ({
   level: 0,
@@ -10,11 +10,11 @@ const state = () => ({
   profile: null,
   myPosition: [],
   users: [],
-  centerMe: true,
   centerPoint: [],
   view: "users",
   rdvs: [],
-  counter: 0
+  rdv: null,
+  counter: 0,
 });
 
 const mutations = {
@@ -23,25 +23,31 @@ const mutations = {
     console.log(state.level);
   },
   updateMyPosition(state, p) {
-    console.log("position update",p)
+    console.log("position update", p);
     state.myPosition = p;
-    awareness.setLocalStateField('position', {
+    awareness.setLocalStateField("position", {
       // Define a print name that should be displayed
       coordinates: p,
-      updated: Date.now()
-  })
+      updated: Date.now(),
+    });
   },
   setUsers(state, u) {
     state.users = u;
+  },
+  setRdv(state, rdv) {
+    if (rdv.uuid == undefined) {
+      rdv.uuid = uuidv4();
+    }
+    if (rdv.author == undefined) {
+      rdv.author = awareness.clientID;
+    }
+    state.rdv = rdv;
   },
   setProfiles(state, p) {
     state.profiles = p;
   },
   setProfile(state, id) {
     state.profile = id;
-  },
-  centerMe(state, v) {
-    state.centerMe = v;
   },
   centerToPoint(state, coordinates) {
     state.centerPoint = coordinates;
@@ -57,8 +63,8 @@ const mutations = {
     state.rdvs = rdvs;
   },
   increment(state, payload) {
-    state.counter = state.counter + payload
-  }
+    state.counter = state.counter + payload;
+  },
   // setConfig(state, c) {
   //   state.config = c
   // }
@@ -66,8 +72,12 @@ const mutations = {
 
 const actions = {
   increment(context, payload) {
-    context.commit('increment', payload);
-  }
+    context.commit("increment", payload);
+  },
+  updateYstoreRdvs(context, rdv) {
+    // context.commit("increment", payload);
+    ystore.rdvs[rdv.uuid] = rdv;
+  },
   // async newDoc(context){
   //   let doc = Automerge.init()
   //   context.commit('setDoc', doc)

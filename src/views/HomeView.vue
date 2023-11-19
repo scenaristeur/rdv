@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <MapComponent />
+    <!-- <MapComponent /> -->
     <WorldMap :value="view" :users="users" :rdvs="rdvs"/>
 
     <ProfileView />
@@ -14,7 +14,7 @@
 <script>
 // @ is an alias to /src
 import WorldMap from '@/views/WorldMap.vue'
-import MapComponent from '@/components/MapComponent.vue'
+// import MapComponent from '@/components/MapComponent.vue'
 import ProfileView from '@/components/ProfileView.vue'
 import UsersView from '@/components/UsersView.vue'
 import RdvView from '@/components/RdvView.vue'
@@ -24,7 +24,7 @@ export default {
   name: 'MapView',
   components: {
     //MapView,
-    MapComponent,
+    // MapComponent,
     WorldMap,
     ProfileView,
     UsersView,
