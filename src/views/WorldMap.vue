@@ -102,7 +102,7 @@
 <script setup>
 // import { /*defineComponent,*/ ref, computed } from "@vue/composition-api";
 
-import { ref, /*computed,*/ defineProps, watch, inject } from "vue";
+import { ref, computed, defineProps, watch, inject } from "vue";
 import { useStore } from 'vuex'
 import marker from "@/assets/marker.png";
 import marker_selected from "@/assets/marker_selected.png";
@@ -177,6 +177,8 @@ watch(
 )
 
 
+
+
 const geoLocChange = (event) => {
   console.log("AAAAA", event);
   position.value = event.target.getPosition();
@@ -190,9 +192,13 @@ const geoLocChange = (event) => {
   localStorage.setItem('rdv_map_view', JSON.stringify({ center: view.value.getCenter(), zoom: view.value.getZoom() }))
 };
 
-// const trackCounter = computed(() => {
-//   return store.state.core.counter;
-// });
+const centerPoint = computed(() => {
+ // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  return store.state.core.centerPoint;
+});
+watch(centerPoint,(centerPoint)=>{
+  view.value?.setCenter(centerPoint);
+})
 
 
 const selectConditions = inject("ol-selectconditions");

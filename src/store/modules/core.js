@@ -10,7 +10,7 @@ const state = () => ({
   profile: null,
   myPosition: [],
   users: [],
-  centerPoint: [],
+  centerPoint: null,
   view: "users",
   rdvs: [],
   rdv: null,

@@ -1,6 +1,6 @@
 <template>
     <div>
-        rdvform {{ rdv }}
+        <!-- rdvform {{ rdv }} -->
 
         <BModal v-model="showRdvForm" @ok="onAddRdv" size="lg">
             <div v-if="rdv != null">
@@ -85,11 +85,12 @@ export default {
             console.log(this.date)
             // console.log(date)
             if (this.date[1] == null) { this.date[1] = this.date[0] }
-            this.rdv.date = this.date
-            this.rdv.start_date = this.date[0].toLocaleDateString()
-            this.rdv.start_time = this.date[0].toLocaleTimeString()
-            this.rdv.end_date = this.date[1].toLocaleDateString()
-            this.rdv.end_time = this.date[1].toLocaleTimeString()
+            this.rdv.start = this.date[0].toString()
+            this.rdv.end = this.date[1].toString()
+            // this.rdv.start_date = this.date[0].toLocaleDateString()
+            // this.rdv.start_time = this.date[0].toLocaleTimeString()
+            // this.rdv.end_date = this.date[1].toLocaleDateString()
+            // this.rdv.end_time = this.date[1].toLocaleTimeString()
             // this.rdv.password = Base64.stringify(sha256(password.value));
             // password.value = ""
             //console.log(date_start, time_start, date_end, time_end)

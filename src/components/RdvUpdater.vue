@@ -20,6 +20,33 @@ export default {
         rdvsUpdate() {
             let rdvs = []
             for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
+             
+                console.log(uuid, rdv.start, rdv.end, rdv.title, rdv.color, rdv.description, rdv)
+                console.log(Date.parse(rdv.end))
+                let end = Date.parse(rdv.end)
+                let now = Date.now()
+                console.log(now, end, end<now)
+                if (end < now){
+                    console.log("DELETE old rdv", uuid)
+                    delete ystore.rdvs[uuid]
+                        return
+                }
+                rdvs.push(rdv)
+                // console.log(rdv.date[0], rdv.date[1], typeof rdv.date[0], typeof rdv.date[1])
+                // console.log( new Date(rdv.date[0], new Date(rdv.date[1])))
+                
+                //   let theRdv = ystore.rdvs[uuid]
+                //   console.log('theRDV',theRdv)
+                //     console.log("-----------dates", uuid, rdv)
+                  
+             
+
+            }
+            this.$store.commit('core/setRdvs', rdvs)
+        },
+        rdvsUpdate1() {
+            let rdvs = []
+            for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {
                 if (uuid != awareness.clientID) {
                   
                     console.log("coordin", uuid, rdv.coordinates[0], rdv.coordinates[1], rdv.title)
