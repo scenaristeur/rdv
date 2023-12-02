@@ -114,7 +114,7 @@
 <script setup>
 // import { /*defineComponent,*/ ref, computed } from "@vue/composition-api";
 
-import { ref, computed, defineProps, watch, inject } from "vue";
+import { ref, computed, watch, inject } from "vue";
 import { useStore } from 'vuex'
 import marker from "@/assets/marker.png";
 import marker_selected from "@/assets/marker_selected.png";
@@ -158,26 +158,31 @@ try {
 
 
 
-const prop = defineProps({
-  //value: { default: '', type: [String, Number] },
-  users: { type: [Array] },
-  rdvs: { type: [Array] },
-  places: { type: [Array] },
-})
+// const prop = defineProps({
+//   //value: { default: '', type: [String, Number] },
+//   users: { type: [Array] },
+//   rdvs: { type: [Array] },
+//   places: { type: [Array] },
+// })
 const contextMenuItems = ref([]);
 
-watch(
-  () => prop.users,
-  () => {
-    console.log('prop users changed', prop.users)
-  }
-)
+////
+const rdvs = computed(() => {
+ // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  return store.state.core.rdvs;
+});
+const places = computed(() => {
+ // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  return store.state.core.places;
+});
+const users = computed(() => {
+ // https://www.koderhq.com/tutorial/vue/composition-api-vuex/
+  return store.state.core.users;
+});
 
-watch(
-  () => prop.rdvs,
-  () => {
-    console.log('prop rdvs changed', prop.rdvs)
-    for (let rdv of Object.values(prop.rdvs)) {
+watch(rdvs,(rdvs)=>{
+  console.log('prop rdvs changed', rdvs)
+    for (let rdv of Object.values(rdvs)) {
       console.log("-----", rdv.uuid, rdv.title, rdv)
       const feature = new Feature({
         geometry: new Geom.Point(rdv.coordinates),
@@ -187,16 +192,11 @@ watch(
       });
       rdvMarkers.value.source.addFeature(feature);
     }
-
-  }
-)
-
-watch(
-  () => prop.places,
-  () => {
-    console.log('prop places changed', prop.places)
+})
+watch(places,(places)=>{
+  console.log('prop places changed', places)
     placeMarkers.value.source.clear()
-    for (let place of Object.values(prop.places)) {
+    for (let place of Object.values(places)) {
       console.log("-----", place, )
       const feature = new Feature({
         geometry: new Geom.Point([place.lon,place.lat]),
@@ -207,8 +207,20 @@ watch(
       placeMarkers.value.source.addFeature(feature);
     }
 
-  }
-)
+})
+
+///
+
+// watch(
+//   () => prop.users,
+//   () => {
+//     console.log('prop users changed', prop.users)
+//   }
+// )
+
+
+
+
 
 const geoLocChange = (event) => {
   position.value = event.target.getPosition();

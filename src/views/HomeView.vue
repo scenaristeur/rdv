@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- <MapComponent /> -->
-    <WorldMap :value="view" :users="users" :rdvs="rdvs" :places="places" />
+    <WorldMap />
     <!-- <TimelineView /> -->
     <ProfileView />
     <WikipediaView v-if="view == 'wikipedia'" />
