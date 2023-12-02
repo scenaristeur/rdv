@@ -47,11 +47,19 @@ const mutations = {
         coordinates: p,
         updated: state.positionUpdated,
       });
-      let places = await this.dispatch("core/getWikipedia", p);
-      console.log(places);
-      state.places = places
+
     }
     },
+async getWikipedia(state){
+  let places = await this.dispatch("core/getWikipedia", state.myPosition);
+  console.log(places);
+  state.places = places
+},
+async removeWikipedia(state){
+ 
+  state.places = []
+},
+
   setUsers(state, u) {
     state.users = u;
   },

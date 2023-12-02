@@ -1,4 +1,5 @@
 <template>
+    <div><p>Clic droit sur la carte pour ajouter un rendez-vous.</p>
         <BListGroup class="scroll_list">
             <BListGroupItem v-for="rdv in rdvs" :key="rdv.uuid" button @click="rdvSelected(rdv)">
                 <h4>{{ rdv.title }}</h4>
@@ -10,6 +11,7 @@
                 <AdresseView :coordinates="rdv.coordinates" />
             </BListGroupItem>
         </BListGroup>
+    </div>
 </template>
 
 <script>

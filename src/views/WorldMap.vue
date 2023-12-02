@@ -195,6 +195,7 @@ watch(
   () => prop.places,
   () => {
     console.log('prop places changed', prop.places)
+    placeMarkers.value.source.clear()
     for (let place of Object.values(prop.places)) {
       console.log("-----", place, )
       const feature = new Feature({
@@ -264,7 +265,7 @@ const overrideStyleFunction = (feature, style) => {
 
 contextMenuItems.value = [
   {
-    text: "Center map here",
+    text: "Centrer la carte ici",
     icon: pin_center,
     classname: "some-style-class", // add some CSS rules
     callback: (val) => {
@@ -272,7 +273,7 @@ contextMenuItems.value = [
     }, // `center` is your callback function
   },
   {
-    text: "Add a rdv",
+    text: "Ajouter un rdv",
     classname: "some-style-class", // you can add this icon with a CSS class
     // instead of `icon` property (see next line)
     icon: pin_drop, // this can be relative or absolute
@@ -289,7 +290,7 @@ contextMenuItems.value = [
 .map-toolbar{
   position: absolute  !important;
   top: 0px;
-  left: 33px;
+  left: 50px;
   z-index: 2;
 }
 </style>

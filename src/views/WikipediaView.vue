@@ -1,6 +1,10 @@
 <template>
     <div>
+        <div>
 
+            <button v-if="places.length == 0"  @click="getWikipedia">Afficher les endroits wikipedia voisins</button>
+            <button v-else @click="hideWikipedia">Masquer les emplacements wikipedia</button>
+        </div>
         <BListGroup v-if="places.length > 0" class="scroll_list">
             <div>
                 <BListGroupItem v-for="p in places" :key="p.pageid" href="#" @click="wikipediaClicked(p)">
@@ -8,6 +12,8 @@
                 </BListGroupItem>
             </div>
         </BListGroup>
+     
+       
 
 
         <!-- {{ places }} -->
@@ -37,21 +43,28 @@ export default {
         }
     },
     methods: {
+        async getWikipedia() {
+             await this.$store.commit("core/getWikipedia");
+            
+        },
+        hideWikipedia(){
+            this.$store.commit("core/removeWikipedia");
+        },
         wikipediaClicked(place) {
             console.log(place)
-        
-                this.$store.commit('core/centerToPoint', [place.lon, place.lat])
-         
+
+            this.$store.commit('core/centerToPoint', [place.lon, place.lat])
+
 
         },
 
     },
-    watch: {
-        myPosition() {
-            console.log("update pos")
-            this.getplaces()
-        }
-    },
+    // watch: {
+    //     myPosition() {
+    //         console.log("update pos")
+    //         this.getplaces()
+    //     }
+    // },
     computed: {
         places() {
             return this.$store.state.core.places
