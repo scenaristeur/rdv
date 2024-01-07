@@ -1,16 +1,44 @@
 <template>
     <div><p>Clic droit sur la carte pour ajouter un rendez-vous.</p>
+
+
+        <b-list-group class="scroll_list">
+            <b-list-group-item v-for="rdv in rdvs" :key="rdv.uuid" button @click="rdvSelected(rdv)" href="#" class="flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ rdv.title }}</h5>
+                    <small>{{ rdv.tags }}  </small>
+                    <small>{{ new Date(rdv.start).toLocaleString()}} -> {{ new Date(rdv.end).toLocaleString()}}  <br>auteur: {{ rdv.author }}</small>
+                </div>
+    
+                <p class="mb-1">
+                    {{ rdv.description }} </p>
+    
+     
+                    <span v-if="rdv.distance != undefined"><br>{{ rdv.distance > 1 ? rdv.distance + " km" :
+                        Math.floor(rdv.distance * 1000) + " m" }}</span>
+                   <AdresseView :coordinates="rdv.coordinates" /> 
+              
+            </b-list-group-item>
+    
+        </b-list-group>
+
+
+
+
+<!-- 
+
         <BListGroup class="scroll_list">
             <BListGroupItem v-for="rdv in rdvs" :key="rdv.uuid" button @click="rdvSelected(rdv)">
                 <h4>{{ rdv.title }}</h4>
                 <small>{{ new Date(rdv.start).toLocaleString()}} -> {{ new Date(rdv.end).toLocaleString()}} 
                 </small>
-                <br> {{ rdv.description }}
-                <span v-if="rdv.distance != undefined"><br>{{ rdv.distance > 1 ? rdv.distance + " km" :
+                <br> {{ rdv.description }} 
+               <span>{{  rdv.tags }} </span> 
+               <span v-if="rdv.distance != undefined"><br>{{ rdv.distance > 1 ? rdv.distance + " km" :
                     Math.floor(rdv.distance * 1000) + " m" }}</span>
-                <AdresseView :coordinates="rdv.coordinates" />
+               <AdresseView :coordinates="rdv.coordinates" />  
             </BListGroupItem>
-        </BListGroup>
+        </BListGroup> -->
     </div>
 </template>
 

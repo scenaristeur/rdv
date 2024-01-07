@@ -44,6 +44,10 @@
                     <b-col>
                         <label for="color"><code>Color:</code></label>
                         <b-form-input id="color" v-model="rdv.color" :disabled="!edit" type="color"></b-form-input>
+
+                        <b-form-input id="input-live" v-model="rdv.tags" 
+                        :disabled="!edit" aria-describedby="input-live-help input-live-feedback" placeholder="tags comma separated"
+                        trim></b-form-input>
                     </b-col>
                     <!-- <b-col>
                         <label for="password"><code>Password:</code></label>
