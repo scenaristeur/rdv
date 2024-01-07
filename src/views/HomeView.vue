@@ -3,10 +3,13 @@
     <!-- <MapComponent /> -->
     <WorldMap />
     <!-- <TimelineView /> -->
+    <MenuComponent />
     <ProfileView />
     <WikipediaView v-if="view == 'wikipedia'" />
     <UsersView v-if="view == 'users'" />
     <RdvView v-if="view == 'rdv'" />
+    <PostView v-if="view == 'post'" />
+    <GraphView v-if="view == 'graph'" />
     <RdvUpdater />
     <UsersUpdater />
 
@@ -24,6 +27,9 @@ import RdvView from '@/components/RdvView.vue'
 import RdvUpdater from '@/components/RdvUpdater.vue'
 import UsersUpdater from '@/components/UsersUpdater.vue'
 import WikipediaView from '@/views/WikipediaView.vue'
+import MenuComponent from '@/components/MenuComponent.vue'
+import PostView from '@/views/PostView.vue'
+import GraphView from '@/views/GraphView.vue'
 
 export default {
   name: 'MapView',
@@ -37,7 +43,10 @@ export default {
     RdvUpdater,
     UsersUpdater,
     // TimelineView,
-    WikipediaView
+    WikipediaView,
+    MenuComponent,
+    PostView,
+    GraphView
   },
   computed: {
     view() {

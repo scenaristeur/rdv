@@ -17,6 +17,8 @@ const state = () => ({
   positionUpdated: null,
   wikipedia_api_url: "https://fr.wikipedia.org/w/api.php?origin=*",
   places: [],
+  showProfile: false,
+  posts:[],
 
 
   wikipedia_params: {
@@ -36,6 +38,9 @@ const mutations = {
   //   state.level = state.level + 1;
   //   console.log(state.level);
   // },
+  setShowProfile(state, v) {
+    state.showProfile = v
+  },
   async updateMyPosition(state, p) {
     console.log("position update", p);
     state.myPosition = p;
@@ -91,6 +96,9 @@ async removeWikipedia(state){
   setRdvs(state, rdvs) {
     state.rdvs = rdvs;
   },
+  setPosts(state, posts) {
+    state.posts = posts
+  }
   // increment(state, payload) {
   //   state.counter = state.counter + payload;
   // },
@@ -106,6 +114,13 @@ const actions = {
   updateYstoreRdvs(context, rdv) {
     // context.commit("increment", payload);
     ystore.rdvs[rdv.uuid] = rdv;
+  },
+  updateYstorePosts(context, post) {
+    // context.commit("increment", payload);
+    if (post.uuid == undefined) {
+      post.uuid = uuidv4();
+    }
+    ystore.posts[post.uuid] = post;
   },
   async getWikipedia(context, position) {
     let params = context.state.wikipedia_params;

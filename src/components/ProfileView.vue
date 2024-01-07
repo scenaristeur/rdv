@@ -5,18 +5,7 @@
 <br>
 profile {{ profile }} -->
 
-        <b-button-group>
-            <BButton @click="showProfile = !showProfile" variant="info"> Profil</BButton>
-            <!-- <BButton @click="addRdv" variant="success"> rdv</BButton> -->
 
-        </b-button-group>&nbsp;&nbsp;&nbsp;
-        <b-button-group>
-            <b-button @click="setView('users')">Users</b-button>
-            <b-button @click="setView('rdv')">Rdv</b-button>
-            <b-button @click="setView('wikipedia')">Wikipedia</b-button>
-            <!-- <b-button disabled>Calendar</b-button> -->
-
-        </b-button-group>
 
 
         <BModal v-model="showProfile" @ok="updateUser">
@@ -107,7 +96,7 @@ export default {
     // },
     data() {
         return {
-            showProfile: false,
+           //
             user: {
                 name: 'user_' + Date.now(),
                 // Define a color that should be associated to the user:
@@ -170,14 +159,13 @@ export default {
                 alert("ajoutez un nom de profil")
             }
         },
-        setView(v) {
-            this.$store.commit('core/setView', v)
-        },
+
         updateUser() {
             console.log("User", this.user)
             awareness.setLocalStateField('profile', this.user)
             localStorage.setItem('rdv_user', JSON.stringify(this.user))
             this.updateInterests()
+            this.$store.commit('core/setShowProfile',false)
         },
         changeProfile(id) {
             console.log(id)
@@ -208,6 +196,9 @@ export default {
         profile() {
             return this.$store.state.core.profile
         },
+        showProfile() {
+            return this.$store.state.core.showProfile
+        }
     }
 }
 </script>

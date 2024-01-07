@@ -14,7 +14,8 @@ export default {
     name: "RdvUpdater",
     created() {
         console.log("RDV CREATED !!!!!!!!!!!!!!!!!!!!!", awareness)
-        observeDeep(ystore.rdvs, this.rdvsUpdate,)
+        observeDeep(ystore.rdvs, this.rdvsUpdate)
+        observeDeep(ystore.posts, this.postsUpdate)
     },
     methods: {
         rdvsUpdate() {
@@ -33,6 +34,24 @@ export default {
              }
             this.$store.commit('core/setRdvs', rdvs)
         },
+
+        postsUpdate() {
+            let posts = []
+            for (let [uuid, post] of Object.entries(ystore.posts)) {
+
+               
+                let now = Date.now()
+                console.log(post.title, post.end, now)
+                if (post.end < now){
+                    console.log("DELETE old post", uuid)
+                    delete ystore.posts[uuid]
+                        return
+                }
+                posts.unshift(post)
+             }
+            this.$store.commit('core/setPosts', posts)
+        },
+
         rdvsUpdate1() {
             let rdvs = []
             for (let [uuid, rdv] of Object.entries(ystore.rdvs)) {

@@ -12,6 +12,7 @@ const shape = {
   // brains: [],
   // neurones: [],
   rdvs: {},
+  posts: {},
 };
 export const store = syncedStore(shape);
 // export const observe = observeDeep()
