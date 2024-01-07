@@ -120,6 +120,9 @@ const actions = {
     if (post.uuid == undefined) {
       post.uuid = uuidv4();
     }
+    if (post.author == undefined) {
+      post.author = awareness.clientID;
+    }
     ystore.posts[post.uuid] = post;
   },
   async getWikipedia(context, position) {
