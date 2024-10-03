@@ -5,6 +5,8 @@
         links: {{ links }}
         <hr> -->
 
+
+
         rdvs : {{ rdvs }}
         <hr>
         users: {{ users }}
@@ -20,6 +22,10 @@
         nodes : {{ nodes }}
 
         {{ ystore.todos }} -->
+
+        nodes : {{ nodes }}
+        <hr>
+
     </div>
 </template>
 
@@ -65,7 +71,7 @@ export default {
                 .nodeThreeObjectExtend(true)
                 // .height(this.$refs.graph.element.parent.height)
                 .onNodeClick(node => this.focus(node))
-                .nodeAutoColorBy('ve:group')
+                .nodeAutoColorBy('group')
                 .linkDirectionalArrowLength(3.5)
                 .linkDirectionalArrowRelPos(1)
                 .linkCurvature(0.25).linkThreeObjectExtend(true)
@@ -102,8 +108,11 @@ export default {
             }
 
             window.onresize = reportWindowSize;
+            this.rdvs = this.$store.state.core.rdvs
+            this.updateGraph()
         },
         focus(node) {
+            console.log("focus", node)
             this.$store.commit('core/setCoreCurrent', node)
             // Aim at node from outside it
             const distance = 40;
@@ -113,21 +122,66 @@ export default {
                 ? { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }
                 : { x: 0, y: 0, z: distance }; // special case if node is in (0,0,0)
             this.graph.cameraPosition(newPos, node, 3000)
+        },
+        updateGraph() {
+            this.rdvs.forEach(rdv => {
+                console.log(rdv)
+                let findNode = this.nodes.find(n => n.id == rdv.uuid)
+                if (findNode == null) {
+                    this.nodes.push({ id: rdv.uuid, name: rdv.title, group: "rdv" })
+                } else {
+                    console.log("should update node rdv", findNode)
+                }
+
+            });
+
+            this.users.forEach(user => {
+                console.log(user)
+                let findNode = this.nodes.find(n => n.id == user.uuid)
+                if (findNode == null) {
+                    this.nodes.push({ id: user.uuid, name: user.name, group: "user" })
+                } else {
+                    console.log("should update node user", findNode)
+                }
+
+            });
+
+            this.posts.forEach(post => {
+                console.log(post)
+                let findNode = this.nodes.find(n => n.id == post.uuid)
+                if (findNode == null) {
+                    this.nodes.push({ id: post.uuid, name: post.title, group: "post" })
+                } else {
+                    console.log("should update node post", findNode)
+                }
+
+            });
+
+            this.graph.graphData({ nodes: this.nodes, links: this.links })
         }
     },
     watch: {
-        nodes() {
-            this.graph.graphData({ nodes: this.nodes, links: this.links })
+        rdvs() {
+            this.updateGraph()
         },
-        links() {
-            this.graph.graphData({ nodes: this.nodes, links: this.links })
+        users() {
+            this.updateGraph()
         },
+        posts() {
+            this.updateGraph()
+        },
+        // nodes() {
+        //     this.graph.graphData({ nodes: this.nodes, links: this.links })
+        // },
+        // links() {
+        //     this.graph.graphData({ nodes: this.nodes, links: this.links })
+        // },
         coreCurrent() {
             if (this.coreCurrent != null) {
                 let node = this.nodes.find(n => n.id == this.coreCurrent.id)
                 this.focus(node)
             }
-        }
+       }
     },
     computed: {
         coreCurrent() {

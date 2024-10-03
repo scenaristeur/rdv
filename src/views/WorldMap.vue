@@ -142,7 +142,7 @@ const store = useStore()
 const view = ref();
 
 const position = ref([]);
-const followMe = ref(true)
+const followMe = ref(false)
 
 const rdvMarkers = ref([]);
 const placeMarkers = ref([]);
