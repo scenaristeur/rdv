@@ -3,9 +3,10 @@
         <b-button-group>
             <b-button @click="setView('rdv')" variant="outline-primary" :pressed="view == 'rdv'">Rdv</b-button>
            <b-button @click="setView('users')" variant="outline-primary" :pressed="view == 'users'">Users</b-button>
-            <b-button @click="setView('wikipedia')" variant="outline-primary" :pressed="view == 'wikipedia'">Lieux</b-button>
+
             <b-button @click="setView('post')" variant="outline-primary" :pressed="view == 'post'">Post</b-button>
             <b-button @click="setView('graph')" variant="outline-primary" :pressed="view == 'graph'">graph</b-button>
+            <b-button @click="setView('wikipedia')" variant="outline-primary" :pressed="view == 'wikipedia'">wkpedia</b-button>
             <b-button @click="onShowProfile" variant="outline-primary" :pressed="view == 'profile'"> Profil</b-button>
             <!-- <b-button disabled>Calendar</b-button> -->
         </b-button-group>

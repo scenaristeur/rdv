@@ -1,14 +1,14 @@
 <template>
 
-        <b-button v-if="adresseShow == false" @click.stop="showAdresse" variant="primary" size="sm">adresse</b-button>
-        <div v-else>
+        <!-- <b-button v-if="adresseShow == false" @click.stop="showAdresse" variant="primary" size="sm">adresse</b-button>
+        <div v-else> -->
             
-            {{ adresse }} 
+            
 
-            <br>
-            <b-button @click.stop="ouvrir" variant="primary" size="sm">Naviguer</b-button>
-            <b-button  @click.stop="adresseShow = false" variant="primary" size="sm">cacher</b-button>
-        </div>  
+            <!-- <br> -->
+            <b-button @click.stop="ouvrir" variant="primary" size="sm">{{ adresse }} </b-button>
+            <!-- <b-button  @click.stop="adresseShow = false" variant="primary" size="sm">cacher</b-button> -->
+        <!-- </div>   -->
 </template>
 
 <script>
@@ -21,12 +21,15 @@ export default {
             adresseShow :false
         }
     },
+    mounted() { 
+        this.showAdresse()
+    },
     methods: {
         async showAdresse() {
             this.adresseShow = true
             let add = await this.adress(this.coordinates)
-            // let split = add.display_name.split(",")
-            this.adresse = add.display_name
+            let split = add.display_name.split(",")
+            this.adresse = split[0]+" "+split[1]+" "+split[2]
         },
         async adress([lon, lat]) {
             let url = "https://nominatim.openstreetmap.org/reverse?lat=" + lat + "&lon=" + lon + "&format=json"
