@@ -5,17 +5,24 @@
         <b-list-group class="scroll_list">
             <b-list-group-item v-for="rdv in rdvs" :key="rdv.uuid" button @click="rdvSelected(rdv)" href="#" class="flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ rdv.title }}</h5>
+                   
+
+                    <b class="mb-1">{{ rdv.title }}</b>
+                 
                     <small>{{ rdv.tags }}  </small>
-                    <small>{{ new Date(rdv.start).toLocaleString()}} -> {{ new Date(rdv.end).toLocaleString()}}  <br>auteur: {{ rdv.author }}</small>
+                    <b-badge variant="primary">
+                        <span v-if="rdv.distance != undefined"><br>{{ rdv.distance > 1 ? rdv.distance + " km" :
+                            Math.floor(rdv.distance * 1000) + " m" }}</span><br>
+                        {{ display(rdv.start)}} <br> {{ display(rdv.end)}} 
+                       
+                     </b-badge>
                 </div>
     
                 <p class="mb-1">
                     {{ rdv.description }} </p>
     
      
-                    <span v-if="rdv.distance != undefined"><br>{{ rdv.distance > 1 ? rdv.distance + " km" :
-                        Math.floor(rdv.distance * 1000) + " m" }}</span>
+                   
                    <AdresseView :coordinates="rdv.coordinates" /> 
               
             </b-list-group-item>
@@ -66,7 +73,10 @@ export default {
                 return a.distance - b.distance;
             });
         },
+        display(date) {
+           return  new Date(date).toLocaleString()    },
     },
+
     computed: {
         rdvs() {
             console.log('rdvs', this.rdvs)

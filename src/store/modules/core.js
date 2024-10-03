@@ -10,7 +10,7 @@ const state = () => ({
   myPosition: [],
   users: [],
   centerPoint: null,
-  view: "users",
+  view: "rdv",
   rdvs: [],
   rdv: null,
   // counter: 0,

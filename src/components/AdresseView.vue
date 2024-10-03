@@ -1,12 +1,14 @@
 <template>
 
-        <!-- coord {{ coordinates }}, -->
-        
-        <button v-if="adresseShow == false" @click.stop="showAdresse">adresse</button>
-        <div v-else>{{ adresse }} <button  @click.stop="adresseShow = false">cacher</button>
+        <b-button v-if="adresseShow == false" @click.stop="showAdresse" variant="primary" size="sm">adresse</b-button>
+        <div v-else>
+            
+            {{ adresse }} 
 
-        </div>
-   
+            <br>
+            <b-button @click.stop="ouvrir" variant="primary" size="sm">Naviguer</b-button>
+            <b-button  @click.stop="adresseShow = false" variant="primary" size="sm">cacher</b-button>
+        </div>  
 </template>
 
 <script>
@@ -23,6 +25,7 @@ export default {
         async showAdresse() {
             this.adresseShow = true
             let add = await this.adress(this.coordinates)
+            // let split = add.display_name.split(",")
             this.adresse = add.display_name
         },
         async adress([lon, lat]) {
@@ -33,6 +36,9 @@ export default {
             // let adresse = await response.json();
             //let add = await response.json().display_name;
             return response.json()
+        },
+        ouvrir() {
+            window.open("https://www.google.com/maps/search/?api=1&query=" + this.adresse)
         }
     },
     computed: {
