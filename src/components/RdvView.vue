@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Clic droit sur la carte pour ajouter un rendez-vous.</p>
+
 
     <b-list-group class="scroll_list">
       <b-list-group-item
@@ -99,7 +99,9 @@ export default {
       });
     },
     display(date) {
-      return new Date(date).toLocaleString();
+        let split =new Date(date).toLocaleString().split(" ")
+        return  split[0].slice(0,-5) + " " + split[1].slice(0,-3)
+     
     },
     ouvrir(rdv) {
       let url = "https://calendar.google.com/calendar/render?action=TEMPLATE&dates=";

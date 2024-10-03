@@ -107,6 +107,7 @@
 <!-- {{ placeMarkers.value }} -->
 
   </ol-map>
+  <div>Clic droit sur la carte pour ajouter un rendez-vous.</div>
   <RdvForm />
  
 </template>

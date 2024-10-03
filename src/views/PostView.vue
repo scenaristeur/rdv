@@ -12,6 +12,8 @@
   >
     <b-card-text>
       Do you think something ? Post it !
+      <br>
+      Disparition dans une semaine
       <div>
       
         <b-form-input v-model="title" placeholder="Titre"></b-form-input>

@@ -2,6 +2,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { store as ystore, awareness } from "@/y_store";
 
+import { distance } from "./utils.js";
+
 
 const state = () => ({
   level: 0,
@@ -42,10 +44,13 @@ const mutations = {
     state.showProfile = v
   },
   async updateMyPosition(state, p) {
-    console.log("position update", p);
-    state.myPosition = p;
-    console.log("delay ", Date.now() - state.positionUpdated);
-    if (Date.now() - state.positionUpdated > 10000) {
+    let d = distance(state.myPosition[0], state.myPosition[1], p[0], p[1], 'K')
+
+    // console.log("delay ", Date.now() - state.positionUpdated);
+    if ((Date.now() - state.positionUpdated > 10000 && d/1000 > 10) || isNaN(d)) {
+      console.log("position update", state.myPosition , p, d);
+      state.myPosition = p;
+      console.log("update my position ", Date.now() - state.positionUpdated);
       state.positionUpdated = Date.now();
       awareness.setLocalStateField("position", {
         // Define a print name that should be displayed
