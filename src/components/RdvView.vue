@@ -10,35 +10,43 @@
         @click="rdvSelected(rdv)"
         href="#"
       >
-        <b-container class="fluid">
+  
           <b-row>
-            <b-col cols="3" v-if="rdv.distance != undefined"
-              ><small>{{
-                rdv.distance > 1
-                  ? Math.round(rdv.distance) + " km"
-                  : Math.floor(rdv.distance * 1000) + " m"
-              }}</small></b-col
-            >
-            <b-col cols="5">{{ rdv.title }}</b-col>
-            <b-col cols="4"
+            <b-col cols="6"
+              ><b>{{ rdv.title }} </b>
+              <small v-if="! isNaN(rdv.distance)"
+                ><br />{{
+                  rdv.distance > 1
+                    ? Math.round(rdv.distance) + " km"
+                    : Math.floor(rdv.distance * 1000) + " m"
+                }}</small
+              >
+
+              <small v-if="rdv.tags"> | {{ rdv.tags }} </small>
+
+              <small v-if="rdv.description"><br>{{ rdv.description }} </small>
+            </b-col>
+            <b-col cols="6"
               ><small>
                 <b-button variant="success" @click.stop="ouvrir(rdv)" size="sm">
-                  {{ display(rdv.start) }} <br />
-                  {{ display(rdv.end) }}
+                  <small
+                    >{{ display(rdv.start) }} <br />
+                    {{ display(rdv.end) }}
+                  </small>
                 </b-button>
               </small></b-col
             >
           </b-row>
-        </b-container>
-        <div class="d-flex w-100 justify-content-between">
+   
+        <!-- <div class="d-flex w-100 justify-content-between">
 
 
-          <small>{{ rdv.tags }} </small>
+          
         </div>
 
         <p class="mb-1">
-          <small>{{ rdv.description }} </small>
-        </p>
+        
+        </p> -->
 
         <AdresseView :coordinates="rdv.coordinates" />
       </b-list-group-item>
@@ -94,14 +102,17 @@ export default {
       return new Date(date).toLocaleString();
     },
     ouvrir(rdv) {
-        let url = "https://calendar.google.com/calendar/render?action=TEMPLATE&dates="
-        url+=new Date(rdv.start).toISOString().replace(/[^\w\s]/gi, '')+"/"+new Date(rdv.end).toISOString().replace(/[^\w\s]/gi, '');
-        url+="&details="+rdv.description+"<br><br>"+rdv.tags
-        url+="&location="+rdv.coordinates[1]+","+rdv.coordinates[0]
-        url+="&text="+rdv.title
-                
-            window.open(url)
-        }
+      let url = "https://calendar.google.com/calendar/render?action=TEMPLATE&dates=";
+      url +=
+        new Date(rdv.start).toISOString().replace(/[^\w\s]/gi, "") +
+        "/" +
+        new Date(rdv.end).toISOString().replace(/[^\w\s]/gi, "");
+      url += "&details=" + rdv.description + "<br><br>" + rdv.tags;
+      url += "&location=" + rdv.coordinates[1] + "," + rdv.coordinates[0];
+      url += "&text=" + rdv.title;
+
+      window.open(url);
+    },
   },
 
   computed: {

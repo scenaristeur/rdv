@@ -7,23 +7,25 @@
 
 
 
-        rdvs : {{ rdvs }}
-        <hr>
-        users: {{ users }}
-        <hr>
-        posts: {{ posts }}
+ 
 
 
 
 
         <div ref="graph"></div>
         {{ coreCurrent != null && coreCurrent.id }}
+        <hr>
+        rdvs : {{ rdvs }}
+        <hr>
+        users: {{ users }}
+        <hr>
+        posts: {{ posts }}
         <!-- <hr>
         nodes : {{ nodes }}
 
         {{ ystore.todos }} -->
 
-        nodes : {{ nodes }}
+        <!-- nodes : {{ nodes }} -->
         <hr>
 
     </div>
